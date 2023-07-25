@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>遥控器</title>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./style/vant@2.12.css">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+</head>
+
+<body>
+    <div id="app">
+        <van-tabs v-model="selectedTab">
+            <van-tab title="电视遥控" name="电视遥控" >
+                <van-cell-group>
+                    <van-cell title="控制器" inset>                               
+                    </van-cell>
+                    <van-grid :column-num="3">
+                        <van-grid-item v-for="item in arr1">
+                            <van-button type="info" :icon="item.icon" @click="btnXxx_OnClick(item)">
+                                {{item.name}}
+                            </van-button>
+                        </van-grid-item>
+                    </van-grid>
+                </van-cell-group>
+        
+                <van-cell-group>
+                    <van-cell title="控制器" inset>                               
+                    </van-cell>
+                    <van-grid :border="false" :column-num="3">
+                        <van-grid-item v-for="item in arr2">                    
+                            <div v-if="item.icon!=null">
+                                <van-button type="info" :icon="item.icon" :style="item.style" @click="btnXxx_OnClick(item)">
+                                </van-button>
+                            </div>                    
+                        </van-grid-item>
+                    </van-grid>
+                </van-cell-group>
+            </van-tab>
+            <van-tab title="床头灯遥控" name="床头灯遥控" >
+                <van-cell-group>
+                    <van-cell title="床头灯遥控" inset>                               
+                    </van-cell>
+                    <van-grid :column-num="3">
+                        <!-- <van-grid-item v-for="value in 6" :key="value" icon="photo-o" text="文字" /> -->
+                        <van-grid-item v-for="item in lightarr">
+                            <van-button type="info" :icon="item.icon" @click="btnXxx_OnClick(item)">
+                                {{item.name}}
+                            </van-button>
+                        </van-grid-item>
+                    </van-grid>
+                </van-cell-group>
+            </van-tab>
+            <van-tab title="标签 3" name="标签 3" >内容 3</van-tab>
+            <van-tab title="标签 4" name="标签 4" >内容 4</van-tab>
+        </van-tabs>
+    </div>
+
+    <!-- 先引入 Vue -->
+    <script src="./script/vue@2.7.14.js"></script>
+    <!-- 引入组件库 -->
+    <script src="./script/vant@2.12.54.js"></script>
+
+    <script src="./script/axios@1.4.0.js"></script>
+    <script src="./script/linq@3.2.0.js"></script>
+    <script src="./script/jsonp@0.0.1.js"></script>
+
+    <script src="./data/LightArr.js"></script>
+    <script src="./data/PanasonicTVArr.js"></script>
+
+    <script>
+        Vue.prototype.$axios = axios;
+
+        // 超时时间是 20 秒
+        axios.defaults.timeout = 20000;
+        // 允许跨域
+        axios.defaults.crossDomain = true;
+        axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+
+        Vue.prototype.$linq = Enumerable;
+
+        new Vue({
+            el: '#app',
+            methods: {
+                handleClick: function () {
+                    this.$toast('Hello world!');
+
+                    this.$dialog.alert({
+                        message: '弹窗内容',
+                    });
+                },
+                btnXxx_OnClick: function(args) {
+                    try{
+                        console.log('item: ', JSON.stringify(args));                        
+                        let r = $device.IR_Send("38000", args.data);
+                        if(r) 
+                        {
+                            $device.Vibrate(100);
+                        }
+                        else{
+                            this.$toast(`返回信息:${r}`);
+                        }
+                    }
+                    catch(ex)
+                    {
+                        this.$dialog.alert({message: ex});
+                    }                    
+                },
+                ShowError: function(args) {
+                    this.$dialog.alert({
+                        message: args,
+                    });
+                }
+            },
+            data: function () {
+                return {
+                    selectedTab: '电视遥控',
+                    arr1: getData_PanasonicTVArr1(),
+                    arr2: getData_PanasonicTVArr2(),
+                    lightarr: getData_LightArr()
+                };
+            }
+        });
+
+        // // 调用函数组件，弹出一个 Toast
+        // vant.Toast('Hello Vant 2');
+
+        // 通过 CDN 引入时不会自动注册 Lazyload 组件
+        // 可以通过下面的方式手动注册
+        Vue.use(vant.Lazyload);
+    </script>
+</body>
+
+</html>
