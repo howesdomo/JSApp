@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>放大emoji</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./style/vant@2.12.css">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+</head>
+
+<body>
+    <div id="app">
+		<van-row>
+			<van-field v-model="txt1" label="emoji" placeholder="请输入emoji" clearable />
+		</van-row>
+		<van-row type="flex" justify="center">
+			<div style="font-size: 120px;">{{lastEmoji}}</div>
+		</van-row>
+		<van-row>
+			Unicode: {{unicodeFormatting}}
+		</van-row>
+		<van-row>
+			Len: {{txt1.length}}
+		</van-row>
+		<van-row>
+			Queue: {{this.Queue_txt1_Length.items}}
+		</van-row>
+    </div>
+
+    <!-- 先引入 Vue -->
+    <script src="./script/vue@2.7.14.js"></script>
+    <!-- 引入组件库 -->
+    <script src="./script/vant@2.12.54.js"></script>
+
+	<script src="./script/queue.js"></script>
+
+    <script>        
+        var app = new Vue({
+            el: '#app',
+            data: function () {
+                return {
+					txt1: '\u{01F354}',
+					// txt1: '',
+					Queue_txt1_Length: new Queue(2), // ios 的 emoji 会有多种长度 2～4 位，为了计算最后一个符号的长度，引入一个两位的 Queue 辅助计算
+
+                };
+			},
+            computed: {
+				lastEmoji() {
+					if(!this.txt1) {
+						return "";
+					}
+
+					this.Queue_txt1_Length.enqueue(this.txt1.length);
+					
+					if(!this.Queue_txt1_Length.items || this.Queue_txt1_Length.items.length < 2) {
+						return this.txt1;
+					}
+
+					// ios 的 emoji 会有多种长度 2～4 位，为了计算最后一个符号的长度，引入一个两位的 Queue 辅助计算
+					// 计算出上一次字符串长度 与 目前字符串长度的差异
+					let q = Math.abs(this.Queue_txt1_Length.items[1] - this.Queue_txt1_Length.items[0]);
+					let len = this.txt1.length - q;
+					let r = this.txt1.substr(len, q); // 计算出最后一个 emoji 是什么符号
+					return r;
+				},
+
+				unicodeFormatting() {
+					return this.textFormatting(this.txt1);
+				}
+			},
+            methods: {
+				textFormatting(str) {
+					if(!str) {
+						return "";
+					}
+
+					// Unicode 字元逸出
+					// https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Text_formatting
+					var codePoint = str.codePointAt(0); // 返回 127828
+					var hex = codePoint.toString(16); // 返回 "1f354"
+					var escape = `\\u${hex}`; // 返回 "\\u{1f354}"
+					return escape;
+				},
+
+
+				// 将 Unicode 编码转换为 UTF-8 编码
+				unicodeToUtf8(str) {
+					var utf8Str = "";
+					for (var i = 0; i < str.length; i++) {
+						var charCode = str.charCodeAt(i);
+						if (charCode < 0x80) { // ASCII
+						utf8Str += String.fromCharCode(charCode);
+						} else if (charCode < 0x800) { // 2 字节
+						utf8Str += String.fromCharCode(0xc0 | (charCode >> 6), 0x80 | (charCode & 0x3f));
+						} else if (charCode < 0xd800 || charCode >= 0xe000) { // 3 字节
+						utf8Str += String.fromCharCode(0xe0 | (charCode >> 12), 0x80 | ((charCode >> 6) & 0x3f), 0x80 | (charCode & 0x3f));
+						} else { // 4 字节，代理对
+						i++;
+						var high = charCode;
+						var low = str.charCodeAt(i);
+						var codePoint = (high - 0xd800) * 0x400 + (low - 0xdc00) + 0x10000;
+						utf8Str += String.fromCharCode(0xf0 | (codePoint >> 18), 0x80 | ((codePoint >> 12) & 0x3f), 0x80 | ((codePoint >> 6) & 0x3f), 0x80 | (codePoint & 0x3f));
+						}
+					}
+					return utf8Str;
+				},
+            }
+        });
+
+        // 调用函数组件，弹出一个 Toast
+        // vant.Toast("Hello Vant!");
+
+        // 通过 CDN 引入时不会自动注册 Lazyload 组件
+        // 可以通过下面的方式手动注册
+        Vue.use(vant.Lazyload);
+    </script>
+</body>
+
+</html>
