@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>今日补d咩</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./style/vant@2.12.css" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
+    />
+  </head>
+
+  <body>
+    <div id="app">
+      <van-button type="primary" size="large" @click="shuaxin"
+        >刷新</van-button
+      >
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        :error.sync="error"
+        error-text="请求失败，点击重新加载"
+      >
+        <van-cell v-for="item in list">
+            <div>
+                {{item.displayValue}}
+            </div>
+        </van-cell>
+      </van-list>
+    </div>
+
+    <!-- 先引入 Vue -->
+    <script src="./script/vue@2.7.14.js"></script>
+    <!-- 引入组件库 -->
+    <script src="./script/vant@2.12.54.js"></script>
+
+    <script src="./script/axios@1.4.0.js"></script>
+    <script src="./script/linq@3.2.0.js"></script>
+    <script src="./script/jsonp@0.0.1.js"></script>
+    <script src="./script/moment@2.29.0.js"></script>
+
+    <script>
+      Vue.prototype.$axios = axios;
+
+      // 超时时间是 20 秒
+      axios.defaults.timeout = 20000;
+      // 允许跨域
+      axios.defaults.crossDomain = true;
+      axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+
+      Vue.prototype.$linq = Enumerable;
+
+      let app = new Vue({
+        el: "#app",
+        data: function () {
+          return {
+            // 0 -- D3*2 --> 20230913
+            // 1 -- AD   --> 20230914
+            // 2 -- D3   --> 20230915
+            // 3 -- AD   --> 20230916
+            // 0 -- D3*2 --> 20230917
+            // 1 -- AD   --> 20230918
+            beginDate: moment("2023-09-13"),
+            list: [],
+            error: false,
+            loading: false,
+            finished: false,
+          };
+        },
+        computed: {
+          version() {
+            return "1.0.0";
+          },
+          // username() {
+          //     // 我们很快就会看到 `params` 是什么
+          //     return this.$route.params.username
+          // },
+        },
+        methods: {
+          shuaxin: function () {
+            this.loading = true;
+            this.finished = !this.loading;            
+
+            this.list = [];
+            let today = moment(moment().format("yyyy-MM-DD"));
+
+            for (let i = 0; i < 7; i++) {
+              let date = today.clone().add(i, "day");
+              let toAdd = this.calc(date);
+              this.list.push(toAdd);
+            }
+
+            console.log("list", this.list);
+            this.loading = false;
+            this.finished = !this.loading;
+          },
+          calc: function (momentArg) {
+            let endDate = moment(momentArg.format("yyyy-MM-DD"));
+            let value = Math.abs(endDate - this.beginDate);
+            // 计算出差异天数
+            let diffDays = value / 24 / 60 / 60 / 1000;
+            let r = null;
+            switch (diffDays % 4) {
+              case 0:
+                r = "D3*2";
+                break;
+              case 1:
+                r = "AD";
+                break;
+              case 2:
+                r = "D3";
+                break;
+              case 3:
+                r = "AD";
+                break;
+              default:
+                throw "计算到异常";
+            }
+            return {
+              date: momentArg,
+              value: r,
+              displayValue: `${momentArg.format(
+                "yyyy-MM-DD"
+              )} (${momentArg.format("dddd")}) - ${r}`,
+            };
+          },
+        },
+      });
+
+      // 通过 CDN 引入时不会自动注册 Lazyload 组件
+      // 可以通过下面的方式手动注册
+      Vue.use(vant.Lazyload);
+      app.shuaxin();
+    </script>
+  </body>
+</html>
