@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>今日补d咩</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
     <meta charset="UTF-8" />
-    <link rel="stylesheet" href="./style/vant@2.12.css" />
-
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
-    />
+    <title>今日补d咩</title>    
+    <link rel="stylesheet" href="./style/vant@2.12.css" />    
   </head>
 
   <body>
     <div id="app">
+      <div style="margin-left: 10px; margin-top: 10px; margin-bottom: 10px;">
+        年龄: {{mc_Age_YearMonth}}
+      </div>
       <van-button type="primary" size="large" @click="shuaxin"
         >刷新</van-button
       >
@@ -55,6 +54,7 @@
         el: "#app",
         data: function () {
           return {
+            mBirthday: moment("2022-02-23"),            
             // 0 -- D3*2 --> 20230913
             // 1 -- AD   --> 20230914
             // 2 -- D3   --> 20230915
@@ -72,10 +72,9 @@
           version() {
             return "1.0.0";
           },
-          // username() {
-          //     // 我们很快就会看到 `params` 是什么
-          //     return this.$route.params.username
-          // },
+          mc_Age_YearMonth() {
+            return this.calculateAge_YearMonth(this.mBirthday);
+          },
         },
         methods: {
           shuaxin: function () {
@@ -124,6 +123,45 @@
                 "yyyy-MM-DD"
               )} (${momentArg.format("dddd")}) - ${r}`,
             };
+          },
+          calculateAge_YearMonth: function(birthDate) {
+              // 获取当前日期
+              var currentDate = moment();
+              
+              // 解析出生日期
+              var birthMoment = moment(birthDate, "YYYY-MM-DD");
+              
+              const daysDiff = currentDate.diff(birthMoment, 'days');
+              if(daysDiff <= 30) {
+                return `${daysDiff}天`;
+              }
+
+              // 计算年龄差异
+              var ageDiff = currentDate.diff(birthMoment, 'months');
+              
+              // 计算年龄和月份
+              var years = Math.floor(ageDiff / 12);
+
+              var months = ageDiff % 12;
+              
+              const age = {
+                  years: years,
+                  months: months
+              };
+
+              if(months == 0) {
+                if(years == 0) {
+                  // 少于1个月 计算天数
+                  debugger;
+                  
+                }
+                else
+                  return `${age.years}岁`;
+              }                
+              else if(years == 0) 
+                return `${age.months}个月`;
+              else
+                return `${age.years}岁 ${age.months}个月`;
           },
         },
       });
