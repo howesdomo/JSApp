@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv=X-UA-Compatible content="IE=edge">
+		<meta name=viewport content="width=device-width, initial-scale=1.0, user-scalable=no">
+		
+		<title>古诗文</title>
+		<!-- import CSS -->
+		<link rel="stylesheet" href="./style/element-ui@2.15.13.css" />
+		<!-- <link rel="stylesheet" href="https://unpkg.com/element-ui@2.15.13/lib/theme-chalk/index.css" /> -->
+	</head>
+	<body>
+		<div id="app">
+			<router-view></router-view>
+		</div>
+	</body>
+	<!-- import Vue before Element -->
+	<script src="./script/vue@2.7.14.js"></script>
+	<!-- <script src="https://unpkg.com/vue@2.7.14/dist/vue.js"></script> -->
+
+	<!-- import Vue Router -->
+	<script src="./script/vue-router@3.6.5.js"></script>
+	<!-- <script src="https://unpkg.com/vue-router@3.6.5/dist/vue-router.js"></script> -->
+
+	<!-- import JavaScript -->
+	<script src="./script/element-ui@2.15.13.js"></script>
+	<!-- <script src="https://unpkg.com/element-ui@2.15.13/lib/index.js"></script> -->
+
+	<script src="./script/axios@1.4.0.js"></script>
+	<script src="./script/linq@3.2.0.js"></script>
+	<script src="./script/jsonp@0.0.1.js"></script>
+
+	<!-- import my component-->
+	<script src="./component/ho-js-version.js"></script>
+
+	<!-- import view -->
+	<script src="./view/root.js"></script>
+	<script src="./view/content.js"></script>
+
+	<script src="./view/TODO.js"></script>
+
+	<script>
+		//#region 创建路由实例并配置路由规则
+		const routerArr = [
+				{ path: '/', component: view_Root, IsIgnore: true }, // 根路由
+				{ path: '/view/Content', component: view_Content, IsIgnore: true }, // 内容
+				{ path: '/view/Audio', component: view_TODO, DisplayName: "音频" },
+		];
+
+		const router = new VueRouter({ routes: routerArr });
+		//#endregion
+
+		// 超时时间是 20 秒
+		axios.defaults.timeout = 20000;
+		// 允许跨域
+		axios.defaults.crossDomain = true;
+		axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+
+		// axios.defaults.withCredentials = true;
+		// axios.defaults.crossDomain = true;
+		//Access-Control-Allow-Origin 指向前端 ip:port
+		// axios.defaults.headers.common['Access-Control-Allow-Origin'] = process.env.VUE_APP_Access_Control_Allow_Origin;	
+
+		var vueApp = new Vue({
+			el: "#app",
+			router, // 注入路由
+			data: function () {
+				return {
+					mMenuContent: "首页"
+				};
+			},
+			methods: {
+
+			},
+		});
+	</script>
+	<style>		
+	</style>
+</html>
