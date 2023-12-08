@@ -32,10 +32,11 @@
 	<script src="./script/jsonp@0.0.1.js"></script>
 
 	<!-- import my component-->
-	<script src="./component/ho-js-version.js"></script>
+	<!-- <script src="./component/ho-js-version.js"></script> -->
 
 	<!-- import view -->
 	<script src="./view/root.js"></script>
+	<script src="./view/TTS.js"></script>
 	<script src="./view/content.js"></script>
 
 	<script src="./view/TODO.js"></script>
@@ -45,7 +46,7 @@
 		const routerArr = [
 				{ path: '/', component: view_Root, IsIgnore: true }, // 根路由
 				{ path: '/view/Content', component: view_Content, IsIgnore: true }, // 内容
-				{ path: '/view/Audio', component: view_TODO, DisplayName: "音频" },
+				{ path: '/view/TTS', component: view_TTS, DisplayName: "TTS语音引擎" },
 		];
 
 		const router = new VueRouter({ routes: routerArr });
