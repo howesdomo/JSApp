@@ -15,7 +15,7 @@ const view_root =
     </el-input>
     <el-table
         :data="resultArr"
-        height="340"
+        :height="mTable_Height"
         style="width: 100%"
         @cell-click="table_cell_clickHandler">
         <el-table-column
@@ -32,11 +32,11 @@ const view_root =
             prop="KeyWord"
             label="关键词">
             <template slot-scope="scope">
-                <el-tag 
+                <el-tag
                     v-for="child in scope.row.Keyword"
                     style="margin-right: 5px; margin-bottom: 5px;">
                     {{child}}
-                </el-tag>                
+                </el-tag>
             </template>
       </el-table-column>
     </el-table>
@@ -46,6 +46,7 @@ const view_root =
     {
         return {            
             mSearchArgs: "",
+            mTable_Height: window.innerHeight - 90,
             mArray: [], // 数据从 data.json 文件中获取
             mText: ""
         };

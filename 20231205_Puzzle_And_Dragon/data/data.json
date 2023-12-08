@@ -91,7 +91,7 @@
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
+        "Value": "ミッキー＆フレンズ",
         "Keyword": ["迪士尼", "米老鼠", "唐老鸭"],
         "DateTimeInfo": "2023-11-27"
     },
@@ -101,8 +101,8 @@
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["火车合作"],
+        "Value": "シンカリオン",
+        "Keyword": ["新干线变形机器人"],
         "DateTimeInfo": "2023-11-27"
     },
     {
@@ -110,15 +110,8 @@
         "Keyword": ["富士见", "魔剑美神"],
         "DateTimeInfo": "2023-11-27"
     },
-
-
-
-
-
-
-
     {
-        "Value": "TODO",
+        "Value": "サムライスピリッツ",
         "Keyword": ["侍魂"],
         "DateTimeInfo": "2023-11-27"
     },
@@ -128,38 +121,43 @@
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
+        "Value": "シャーマンキング",
         "Keyword": ["通灵王"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["街头霸王"],
+        "Value": "ストリートファイター",
+        "Keyword": ["街霸", "Street Fighter"],
         "DateTimeInfo": "2023-11-27"
     },
     {
         "Value": "TODO",
-        "Keyword": ["Fate Stay Night"],
+        "Keyword": ["Fate Stay Night", "6132"],
         "DateTimeInfo": "2023-11-27"
     },
     {
         "Value": "TODO",
-        "Keyword": ["妖怪手表"],
+        "Keyword": ["妖怪手表", "4953"],
         "DateTimeInfo": "2023-11-27"
     },
     {
         "Value": "TODO",
-        "Keyword": ["蒙面超人", "假面超人"],
+        "Keyword": ["蒙面超人", "假面超人", "6725"],
         "DateTimeInfo": "2023-11-27"
     },
     {
         "Value": "TODO",
-        "Keyword": ["刀剑神域"],
+        "Keyword": ["刀剑神域", "5885"],
         "DateTimeInfo": "2023-11-27"
     },
     {
         "Value": "TODO",
-        "Keyword": ["银魂"],
+        "Keyword": ["银魂", "6062"],
+        "DateTimeInfo": "2023-11-27"
+    },
+    {
+        "Value": "TODO",
+        "Keyword": ["万智牌", "舰长", "4602"],
         "DateTimeInfo": "2023-11-27"
     },
     {
@@ -169,179 +167,164 @@
     },
     {
         "Value": "TODO",
-        "Keyword": ["万智牌", "舰长"],
+        "Keyword": ["女神异闻录", "6371"],
         "DateTimeInfo": "2023-11-27"
     },
     {
         "Value": "TODO",
-        "Keyword": ["女神异闻录"],
+        "Keyword": ["幽游白书", "5156"],
         "DateTimeInfo": "2023-11-27"
     },
     {
         "Value": "TODO",
-        "Keyword": ["幽游白书"],
+        "Keyword": ["kof", "拳王", "6496"],
         "DateTimeInfo": "2023-11-27"
     },
     {
         "Value": "TODO",
-        "Keyword": ["kof", "拳王"],
+        "Keyword": ["钢之炼金术师", "4023"],
         "DateTimeInfo": "2023-11-27"
     },
     {
         "Value": "TODO",
-        "Keyword": ["钢之炼金术师"],
+        "Keyword": ["小学馆", "四驱兄弟", "四驱小子", "4017"],
         "DateTimeInfo": "2023-11-27"
     },
     {
         "Value": "TODO",
-        "Keyword": ["小学馆", "四驱兄弟", "四驱小子"],
+        "Keyword": ["怪物猎人", "5189"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["怪物猎人"],
+        "Value": "週刊少年マガジン",
+        "Keyword": ["周刊少年", "三只眼", "翼年代", "妖精的尾巴", "加旋"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["三只眼", "翼年代", "妖精的尾巴"],
-        "DateTimeInfo": "2023-11-27"
-    },
-    {
-        "Value": "TODO",
+        "Value": "るろうに剣心",
         "Keyword": ["浪客剑心"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["逆转裁判"],
+        "Value": "逆転裁判",
+        "Keyword": ["逆转裁判", "成步堂龙一"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["死神blecn", "黑崎一护"],
+        "Value": "BLEACH",
+        "Keyword": ["死神BLEACH", "黑崎一护", "朽木露琪亚", "蓝染", "浦原喜助"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["打架佬", "2615", "6265"],
+        "Value": "クローズ",
+        "Keyword": ["CROWS"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["??出版社", "犬夜叉", "魔笛", "辛巴", "柯南"],
+        "Value": "サンデーオールスターズ コラボ Sunday All star",
+        "Keyword": ["Sunday", "犬夜叉", "魔笛", "辛巴", "柯南", "潮与虎", "阿拉丁", "乱马", "怪盗基德"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["进击的巨人"],
+        "Value": "進撃の巨人",
+        "Keyword": ["进击的巨人", "艾伦", "三笠", "兵长"],
         "DateTimeInfo": "2023-11-27"
     },
     {
         "Value": "FF",
-        "Keyword": ["最终幻想", "FF"],
+        "Keyword": ["最终幻想", "FF", "10576"],
         "DateTimeInfo": "2023-11-27"
     },
 
     {
-        "Value": "TODO",
-        "Keyword": ["mini桶"],
+        "Value": "ミニ",
+        "Keyword": ["迷你桶", "mini桶"],
         "DateTimeInfo": "2023-11-27"
     },
 
     {
-        "Value": "TODO",
+        "Value": "北斗の拳",
         "Keyword": ["北斗神拳"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["圣斗士星矢"],
+        "Value": "聖闘士星矢",
+        "Keyword": ["圣斗士星矢", "紫龙", "雅典娜"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["龙珠"],
+        "Value": "ドラゴンボール",
+        "Keyword": ["龙珠", "孙悟空", "比达"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["智龙迷城X", "1292"],
+        "Value": "サンリオキ",
+        "Keyword": [ "三丽鸥", "Hello Kitty", "9266"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": [ "三丽鸥", "Hello itty"],
+        "Value": "HUNTERxHUNTER",
+        "Keyword": ["全职猎人", "冈", "奇犽"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["全职猎人", "冈"],
+        "Value": "バットマン",
+        "Keyword": ["蝙蝠侠", "小丑", "猫女"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["蝙蝠侠", "小丑"],
+        "Value": "ぽかぽかアイルー村DX コラボ",
+        "Keyword": ["怪物猎人村", "1603", "876"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["怪物猎人村", "1603"],
+        "Value": "COC",
+        "Keyword": ["COC", "皮卡超人"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["COC", "730"],
+        "Value": "エヴァンゲリオン",
+        "Keyword": ["新世纪福音战士", "EVA", "eva"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["7-11"],
+        "Value": "神羅万象",
+        "Keyword": ["神罗万象", "饼干"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["EVA"],
-        "DateTimeInfo": "2023-11-27"
-    },
-    {
-        "Value": "TODO",
-        "Keyword": ["饼干龙"],
-        "DateTimeInfo": "2023-11-27"
-    },
-    {
-        "Value": "TODO",
+        "Value": "ドロイド",
         "Keyword": ["安卓龙"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["FF水晶"],
+        "Value": "CD",
+        "Keyword": ["FF水晶", "CD Project"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
+        "Value": "ぐんまけん",
         "Keyword": ["仙鹤", "440"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["仙女??", "10205"],
+        "Value": "フローディア",
+        "Keyword": ["百花", "庭院", "10205"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
+        "Value": "凶禍龍",
         "Keyword": ["凶祸龙", "7549"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
+        "Value": "太鼓の達人",
         "Keyword": ["太鼓达人"],
         "DateTimeInfo": "2023-11-27"
     },
     {
-        "Value": "TODO",
-        "Keyword": ["Gungho合作"],
+        "Value": "ガンホー",
+        "Keyword": ["Gungho合作", "RO仙境传说", "波利"],
         "DateTimeInfo": "2023-11-27"
     }
 ]
