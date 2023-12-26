@@ -1,5 +1,24 @@
 [
     {
+        "Value": "クリスマス",
+        "Keyword": ["圣诞节"],
+        "DateTimeInfo": "2023-12-25"
+    },
+    {
+        "Value": "お正月",
+        "Keyword": ["正月", "新年", "元旦", "年末年始"],
+        "DateTimeInfo": "2024-12-25"
+    },
+    {
+        "Value": "学園",
+        "Keyword": ["学院", "新学期", "学生会"],
+        "DateTimeInfo": "2023-12-25",
+        "FixMe": "会搜索到网球王子还有CROWS的怪物"
+    },
+
+
+
+    {
         "Value": "チェンソーマン",
         "Keyword": ["电锯人"],
         "DateTimeInfo": "2023-11-27"

@@ -2,12 +2,20 @@ const view_root =
 {
     template: 
 `<div>
-    <el-input ref="txtDoCopy" 
-        v-model="mText"
-        style="opacity: 0%;
-        display: block;
-        position: absolute;
-        x: 0px; y: 0px;"></el-input>
+<el-input ref="txtDoCopy"
+v-model="mText"
+style="width: 100px
+opacity: 100%;
+display: block;
+position: absolute;
+x: 0px; y: 0px;"></el-input>
+<button ref="btn0"
+style="width: 100px
+opacity: 100%;
+display: block;
+position: absolute;
+x: 0px; y: 0px;"
+></button>
     <el-input
         placeholder="请输入关键词"
         prefix-icon="el-icon-search"
@@ -40,15 +48,15 @@ const view_root =
             </template>
       </el-table-column>
     </el-table>
-    <button ref="btn0"></button>
 </div>`,
     data: function ()
     {
         return {            
             mSearchArgs: "",
-            mTable_Height: window.innerHeight - 90,
+            mTable_Height: window.innerHeight - 60,
             mArray: [], // 数据从 data.json 文件中获取
-            mText: ""
+            mText: "",
+            mNotifyPosition: "top-left"
         };
     },
     mounted: function() {
@@ -61,6 +69,7 @@ const view_root =
             .catch((e)=>{
                 this.$notify({
                     type: "warning",
+                    position: this.mNotifyPosition,
                     title: "解析json时捕获异常",
                     message: `${e}`,
                 });
@@ -69,6 +78,7 @@ const view_root =
         .catch((e)=>{
             this.$notify({
                 type: "warning",
+                position: this.mNotifyPosition,
                 title: "获取data.json时捕获异常",
                 message: `${e}`,
             });
@@ -123,7 +133,7 @@ const view_root =
 
                 this.$notify({
                     type: "success",
-                    position: 'bottom-left',
+                    position: this.mNotifyPosition,
                     title: "提示",
                     message: `${this.mText} 已拷贝到粘贴板`,                    
                 });
