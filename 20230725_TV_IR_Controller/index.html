@@ -94,8 +94,17 @@
                 },
                 btnXxx_OnClick: function(args) {
                     try{
-                        console.log('item: ', JSON.stringify(args));                        
-                        let r = $device.IR_Send("38000", args.data);
+                        console.log('item: ', JSON.stringify(args));
+                        // 转化为 int
+                        const intF = parseInt("38000");
+                        let strArr = args.data.split(',');
+                        // 转换为 int[]
+                        let intArr = [];                        
+                        for(let index = 0; index < strArr.length; index++) {
+                            intArr.push(parseInt(strArr[index].trim()));
+                        }
+                        
+                        let r = $device.IR_Send(intF, intArr);
                         if(r) 
                         {
                             $device.Vibrate(100);
