@@ -1,593 +1,120 @@
 <!DOCTYPE html>
 <html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv=X-UA-Compatible content="IE=edge">
+		<meta name=viewport content="width=device-width,initial-scale=1">
+		
+		<title>歌词编辑器 - 2024.01.05</title>
+		<!-- import CSS -->
+		<link rel="stylesheet" href="./style/element-ui@2.15.13.css" />
+		<!-- <link rel="stylesheet" href="https://unpkg.com/element-ui@2.15.13/lib/theme-chalk/index.css" /> -->
+	</head>
+	<body>
+		<div id="app">
+			<router-view></router-view>
+		</div>
+	</body>
+	<!-- import Vue before Element -->
+	<script src="./script/vue@2.7.16.js"></script>
+	<!-- 开发环境版本 -->
+	<!-- <script src="https://unpkg.com/vue@2.7.16/dist/vue.js"></script> -->
+	<!-- 生产环境版本 -->
+	<!-- <script src="https://unpkg.com/vue@2.7.16/dist/vue.min.js"></script> -->	
 
-<head>
-	<meta charset="UTF-8" />
-	<title>歌词</title>
-	<!-- import CSS -->
-	<link rel="stylesheet" href="https://unpkg.com/element-ui@2.15.13/lib/theme-chalk/index.css" />
-</head>
+	<!-- import Vue Router -->
+	<script src="./script/vue-router@3.6.5.js"></script>
+	<!-- <script src="https://unpkg.com/vue-router@3.6.5/dist/vue-router.js"></script> -->
 
-<body>
-	<div id="app">
-		<el-container style="height: 100%;">
-			<el-header style="background-color: #f0f9eb;">				
-				<el-row style="margin-top: 5px; margin-bottom: 5px;">					
-					<!-- #region 导入歌词按钮 -->
-					<el-button type="primary" @click="dialogVisible_ImportLylic = true">导入歌词</el-button>
-					<el-dialog title="导入歌词" :visible.sync="dialogVisible_ImportLylic">
-						<el-row>
-							<el-col>
-								<el-input type="textarea" :rows="16" placeholder="请输入歌词" v-model="mTempLylic"></el-input>
-							</el-col>
-						</el-row>
-						<el-row style="margin-top: 10px;">
-							<el-col :span="3">
-								<el-button type="primary" @click="importLylic">导入</el-button>
-							</el-col>
-							<el-col :span="3">
-								<el-button @click="dialogVisible_ImportLylic=false">取消</el-button>
-							</el-col>
-						</el-row>
-					</el-dialog>
-					<!-- #endregion -->
-								
-					<el-button type="primary" @click="btnSelectMP3">打开mp3</el-button>
-					<input ref="upload0" id="btnFileInput" type="file" style="display: none;" @change="upload0_ChangeEvent_Handler" />
+	<!-- import JavaScript -->
+	<script src="./script/element-ui@2.15.13.js"></script>
+	<!-- <script src="https://unpkg.com/element-ui@2.15.13/lib/index.js"></script> -->
+	
+	<!-- 文件保存 -->
+	<script src="./script/FileSaver@2.0.5.js"></script>
+
+
+	<!-- import view -->
+	<script src="./view/root.js"></script>
+	<script src="./view/TODO.js"></script>
+
+	<script>
+class Lyric {
+	constructor(value) {
+		this.Time = null;	
+		this.Text = value;
+
+		this.IsError = false; // 比上一句歌词的时间要小
+		this.TimeSecond = null; // 类型 float, 用于定位播放位置		
+
+		// 检查是否带时间标记
+		const timeMatch = /\[(\d+:\d+\.\d+)](.*)/.exec(value);
+		if (timeMatch) {
+			this.Time = timeMatch[1];
+			this.TimeSecond = timeToSeconds(timeMatch[1]);
+			this.Text = timeMatch[2];				
+		}
+	}
+
+	get Display() {
+		return this.Time ? `[${this.Time}]${this.Text}` : this.Text;
+	}
+}
+
+// TODO 整理到工具类
+function formatTime(seconds) {
+	const minutes = Math.floor(seconds / 60);
+	const remainingSeconds = seconds % 60;
+	return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds.toFixed(2)).padStart(5, '0')}`;
+}
+
+function timeToSeconds(timeString) {
+	// 将时间字符串拆分成分钟、秒和毫秒部分
+	const parts = timeString.split(':');
+	if (parts.length !== 2) {
+		throw new Error('无效的时间格式');
+	}
+	
+	const minutes = parseFloat(parts[0]);
+	const secondsAndMilliseconds = parts[1].split('.');
+	if (secondsAndMilliseconds.length !== 2) {
+		throw new Error('无效的时间格式');
+	}
+	
+	const seconds = parseFloat(secondsAndMilliseconds[0]);
+	const milliseconds = parseFloat(secondsAndMilliseconds[1]);
+
+	// 计算总秒数
+	const totalSeconds = minutes * 60 + seconds + milliseconds / 100;
+
+	return totalSeconds;
+}
+
+
+		//#region 创建路由实例并配置路由规则
+		const routerArr = [
+				{ path: '/', component: view_root, IsIgnore: true }, // 根路由
+				{ path: '/view/Screen', component: view_TODO, DisplayName: "屏幕" },
+				{ path: '/view/Audio', component: view_TODO, DisplayName: "音频" },
+		];
+
+		const router = new VueRouter({ routes: routerArr });
+		//#endregion		
+
+		var vueApp = new Vue({
+			el: "#app",
+			router, // 注入路由
+			data: function () {
+				return {
+
+				};
+			},
+			methods: {
 				
-					<el-divider direction="vertical"></el-divider>
-
-					<span>
-						{{fileName}}
-					</span>
-					
-					<el-divider direction="vertical"></el-divider>
-
-					<span>
-						当前秒数: {{ currentTime_Fixed }}
-					</span>
-
-					<el-divider direction="vertical"></el-divider>
-
-					<span>
-						当前分秒: {{ currentTime_MinuteSecond }}
-					</span>
-					
-				</el-row>
-			</el-header>
-			<el-main style="background-color: #f2f2f2;">
-				<el-row>
-					<el-col :span="11">
-						<el-table :data="mLeftArr" height="600" border highlight-current-row>
-							<el-table-column prop="Time" label="时间" width="80">
-								<template slot-scope="scope">
-									<el-button @click="handleClick(scope.row.TimeSecond)" type="text" size="medium">{{scope.row.Time}}</el-button>
-								</template>
-							</el-table-column>
-							<el-table-column prop="Text" label="内容" size="medium">
-							</el-table-column>
-						</el-table>
-					</el-col>
-		
-					<el-col :span="2">
-						<el-row>
-							<el-col>
-								<el-button @click="btnMoveRight">原封右移 ( O )</el-button>
-							</el-col>
-						</el-row>
-						<el-row>
-							<el-col>
-								<el-button @click="btnChangeTimeMoveRight">替换时间 ( P )</el-button>
-							</el-col>
-						</el-row>
-						<el-row>
-							<el-col>
-								<el-button @click="btnRollbackLast">撤销上次 ( R )</el-button>
-							</el-col>
-						</el-row>
-						<el-row>
-							<el-col>
-								<el-button type="danger" @click="btnLeftArr_DeleteFirstRow">删除一行 ( D )</el-button>
-							</el-col>
-						</el-row>
-					</el-col>
-		
-					<el-col :span="11">
-						<el-card>
-							歌词Next: <span style="color: #606266; font-size: 23px;">{{ mLeftArr_First }}</span>
-						</el-card>
-						<el-table 
-							ref="dt1" 
-							height="475" 
-							:data="mRightArr" 
-							:row-class-name="tableRowClassName"
-							border>
-							<el-table-column prop="Time" label="时间" width="80">
-								<template slot-scope="scope">
-									<el-button @click="handleClick(scope.row.TimeSecond)" type="text" size="medium">{{scope.row.Time}}</el-button>
-								</template>
-							</el-table-column>
-							<el-table-column prop="Text" label="内容" size="medium"></el-table-column>
-						</el-table>
-						<el-card>
-							歌词Next: <span style="color: #606266; font-size: 23px;">{{ mLeftArr_First }}</span>
-						</el-card>
-					</el-col>
-				</el-row>
-			</el-main>
-			<el-footer style="background-color: black;">
-				<div>
-					<el-row style="margin-top: 12px; margin-bottom: 12px;">
-						<el-col :span="4">
-							<el-button type="primary" @click="btnPlay">播放 ( Shift + M ) </el-button>
-						</el-col>
-
-						<el-col :span="4">
-							<el-button type="info" @click="btnPause">暂停 ( Shift + C ) </el-button>
-						</el-col>
-
-						<el-col :span="4">
-							<el-button type="success" @click="btnExportLylic">导出歌词</el-button>
-						</el-col>
-						
-						<el-col :span="4">
-							<el-link type="danger">退回/快进5秒 : 方向键左/右</el-link>
-						</el-col>
-					</el-row>
-					<el-row>
-						<audio 
-							style="width: 100%;" 
-							controls 
-							@timeupdate="updateCurrentTime"
-							ref="audio0"
-							>
-							<source src="" type="audio/mpeg">
-							<!-- <source src="/assets/林家谦 - 时光倒流一句话 (feat. 张敬轩)(live 2021).mp3" type="audio/mpeg"> -->
-							Your browser does not support the audio element.
-						</audio>
-					</el-row>
-				</div>
-			</el-footer>
-		</el-container>
-	</div>
-</body>
-<!-- import Vue before Element -->
-<script src="https://unpkg.com/vue@2.7.14/dist/vue.js"></script>
-
-<!-- import JavaScript -->
-<script src="https://unpkg.com/element-ui@2.15.13/lib/index.js"></script>
-<script src="./script/FileSaver@2.0.5.js"></script>
-
-<script>
-	class Lyric {
-		constructor(value) {
-			this.Time = null;	
-			this.Text = value;
-
-			this.IsError = false; // 比上一句歌词的时间要小
-			this.TimeSecond = null; // 类型 float, 用于定位播放位置		
-
-			// 检查是否带时间标记
-			const timeMatch = /\[(\d+:\d+\.\d+)](.*)/.exec(value);
-			if (timeMatch) {
-				this.Time = timeMatch[1];
-				this.TimeSecond = timeToSeconds(timeMatch[1]);
-				this.Text = timeMatch[2];				
 			}
-		}
-
-		get Display() {
-			return this.Time ? `[${this.Time}]${this.Text}` : this.Text;
-		}
-	}
-
-	// TODO 整理到工具类
-	function formatTime(seconds) {
-		const minutes = Math.floor(seconds / 60);
-		const remainingSeconds = seconds % 60;
-		return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds.toFixed(2)).padStart(5, '0')}`;
-	}
-
-	function timeToSeconds(timeString) {
-		// 将时间字符串拆分成分钟、秒和毫秒部分
-		const parts = timeString.split(':');
-		if (parts.length !== 2) {
-			throw new Error('无效的时间格式');
-		}
-		
-		const minutes = parseFloat(parts[0]);
-		const secondsAndMilliseconds = parts[1].split('.');
-		if (secondsAndMilliseconds.length !== 2) {
-			throw new Error('无效的时间格式');
-		}
-		
-		const seconds = parseFloat(secondsAndMilliseconds[0]);
-		const milliseconds = parseFloat(secondsAndMilliseconds[1]);
-
-		// 计算总秒数
-		const totalSeconds = minutes * 60 + seconds + milliseconds / 100;
-
-		return totalSeconds;
-	}
-
-	/* Mr袁 */
-	// function Debounce(func, duration = 500) {
-	// 	debugger;
-	// 	let timerId;
-	// 	return function(...args) {
-	// 		clearTimeout(timerId);
-	// 		debugger;
-	// 		timerId = setTimeout(()=>{
-	// 			debugger;
-	// 			func.apply(this, args);
-	// 		}, duration);
-	// 	}
-	// }
-
-
-	/**
-	 * 防反跳。func 函数在最后一次调用时刻的delay毫秒之后执行
-	 * @param func 执行函数
-	 * @param delay 时间间隔
-	 * @param isImmediate 为true，debounce会在delay时间间隔的开始时立即调用这个函数
-	 * @returns {Function}
-	 */
-	const Debounce = (func, delay, isImmediate) => {
-		// 'private' variable to store the instance
-		// in closure each timer will be assigned to it
-		let timeout;
-
-		// debounce returns a new anonymous function (closure)
-		return function () {
-			// reference the context and args for the setTimeout function
-			let context = this,
-				args = arguments;
-
-			// should the function be called now? If immediate is true
-			// and not already in a timeout then the answer is: Yes
-			const callNow = isImmediate && !timeout;
-
-			// base case
-			// clear the timeout to assign the new timeout to it.
-			// when event is fired repeatedly then this helps to reset
-			clearTimeout(timeout);
-
-			// set the new timeout
-			timeout = setTimeout(function () {
-				// Inside the timeout function, clear the timeout variable
-				// which will let the next execution run when in 'immediate' mode
-				timeout = null;
-
-				// check if the function already ran with the immediate flag
-				if (!isImmediate) {
-					// call the original function with apply
-					func.apply(context, args);
-				}
-			}, delay);
-
-			// immediate mode and no delay timer? Execute the function immediately
-			if (callNow) func.apply(context, args);
-		};
-	};
-
-	new Vue({
-		el: "#app",
-		data: function () {
-			return {
-				// 定义两个变量，用于记录 shift 和 c 的按键状态
-				onShift: false,
-				onC: false,
-				onM: false,
-
-
-				// ========== local ==========
-				fileName: ``, // 文件名称
-				currentTime: 0, // 音频播放进度
-				dialogVisible_ImportLylic: false, // 导入歌词对话框
-				mTempLylic: ``, // 临时歌词 ( 未导入 )
-				mLeftArr: [], // 左边 ( 未核实的歌词 )
-				mRightArr: [], // 右边 ( 正确的歌词 )
-				mLeftArr_First: ""
-			};
-		},
-		mounted(el, binding) {
-			// 在 document 上添加 keydown 和 keyup 事件
-			document.addEventListener("keydown", this.handleKeyDown);
-			document.addEventListener("keyup", this.handleKeyUp);
-		},
-		unmounted(el) {
-			
-		},
-		computed: {
-			currentTime_Fixed() {
-				return this.currentTime.toFixed(2);
-			},
-			currentTime_MinuteSecond () {
-				return formatTime(this.currentTime_Fixed);
-			}
-		},
-		watch: {
-
-		},
-		methods: {			
-			//#region 监听键盘
-			handleKeyDown: function(e) {
-				if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
-					this.onShift = true;
-				}
-
-				if (e.code === "KeyC") {
-					this.onC = true;
-				}
-
-				if (e.code === "KeyM") {
-					this.onM = true;
-				}
-
-				// 判断是否同时按下了 shift 和 c 键
-				if (this.onShift && this.onC) {
-					this.onC = false;
-					this.btnPause();
-					return;
-				}
-
-				// 判断是否同时按下了 shift 和 m 键
-				if (this.onShift && this.onM) {
-					this.onM = false;
-					this.btnPlay();
-					return;
-				}
-			},
-			// 定义一个方法，用于处理 keyup 事件
-			handleKeyUp: function(e) {
-				if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
-					this.onShift = false;
-					return;
-				}
-				
-				if (e.code === "KeyC") {
-					// 如果是，将 onC 设为 false
-					this.onC = false;
-					return;
-				}
-
-				if (e.code === "KeyD") {
-					this.btnLeftArr_DeleteFirstRow();
-					return;
-				}
-
-				if (e.code === "KeyM") {
-					this.onM = false;
-					return;
-				}
-
-				if (e.code === "KeyO") {
-					this.btnMoveRight();
-					return;
-				}
-
-				if (e.code === "KeyP") {
-					this.btnChangeTimeMoveRight();
-					return;
-				}
-
-				if (e.code === "KeyR") {
-					this.btnRollbackLast();
-					this.btnPause();
-					return;
-				}
-
-				if (e.code === "ArrowLeft") {
-					this.$refs.audio0.currentTime = this.currentTime - 5;
-					return;
-				}
-
-				if (e.code === "ArrowRight") {
-					this.$refs.audio0.currentTime = this.currentTime + 5;
-					return;
-				}
-			},
-			//#endregion
-
-			//#region audio控件 监听 播放时间更新事件
-
-			updateCurrentTime: function (event) {
-				this.currentTime = event.target.currentTime;
-			},
-
-			//#endregion 
-
-			btnSelectMP3: function() {
-				this.$refs.upload0.click();
-			},
-
-			upload0_ChangeEvent_Handler(event) {
-				const files = event.target.files;
-				const that = this;
-				for (let index = 0; index < files.length; index++) {
-					const fileReader = new FileReader();
-
-					let selectedFile = files[index];
-					this.fileName = selectedFile.name;
-					fileReader.readAsDataURL(selectedFile);
-
-					fileReader.onload = function () {
-						const base64Str = this.result;
-						that.$refs.audio0.src = base64Str;
-						that.btnPlay();
-					};
-				}
-			},
-			
-			importLylic: function () {
-				if(!this.mTempLylic) {
-					this.$notify({
-						type: "error",
-						title: "捕获异常",
-						message: "歌词为空",
-					});
-					return;
-				}
-
-				let arr = this.mTempLylic.split(/\n|\r|\r\n/);
-				let r = [];
-				arr.forEach(item => {
-					if (item) {
-						r.push(new Lyric(item));
-					}
-				});
-				
-				console.log("导入歌词成功。");
-				console.log(r);
-
-				this.mLeftArr = r;
-				this.getLeftArrFist();
-
-				this.mRightArr = [];
-
-				this.dialogVisible_ImportLylic = false;
-			},
-
-			getLeftArrFist: function() {
-				if(this.mLeftArr && this.mLeftArr.length > 0)
-					this.mLeftArr_First = this.mLeftArr[0].Text;
-				else
-					this.mLeftArr_First = "";
-			},
-
-			btnMoveRight: function () {
-				try {
-					this.mRightArr.push(this.mLeftArr[0]);
-					this.mLeftArr.shift();
-					this.getLeftArrFist();
-
-					// TODO 尝试使用防抖函数
-					setTimeout(() => {
-						this.scrollToEnd();
-					}, 200);
-					// Debounce(this.scrollToEnd); // TODO 无法进入 防抖函数
-				}
-				catch (e) {
-					console.error(e);
-					debugger;
-				}
-			},
-			btnChangeTimeMoveRight: function () {
-				const toChange = this.mLeftArr[0];
-				const time = this.currentTime;
-				toChange.TimeSecond = time; // 更新秒数
-				toChange.Time = formatTime(time.toFixed(2)); // 更新 MM:SS 显示方式
-				this.mRightArr.push(toChange);
-				this.mLeftArr.shift();
-				this.getLeftArrFist();
-
-				// TODO 尝试使用防抖函数
-				setTimeout(() => {
-					this.scrollToEnd();
-				}, 200);
-			},
-			scrollToEnd: function () {
-				let index = this.mRightArr.length - 1;
-				const wrapper = this.$refs.dt1.bodyWrapper;
-				const rows = wrapper.children[0].rows;
-				if (rows[index]) {
-					wrapper.scrollTop = rows[index].offsetTop;
-				}
-			},
-
-			btnRollbackLast: function() {
-				if(this.mRightArr.length <= 0) {
-					return;
-				}
-				let index = this.mRightArr.length - 1;
-				this.mLeftArr.unshift(this.mRightArr[index]);
-				this.mRightArr.pop();
-				this.getLeftArrFist();
-			},
-
-			btnLeftArr_DeleteFirstRow: function() {
-				if(!this.mLeftArr || this.mLeftArr.length == 0) 
-					return;
-
-				this.$confirm('确认删除？')
-          		.then(_ => {            	
-					this.mLeftArr.shift();
-					this.getLeftArrFist();
-
-					done();
-          		})
-          		.catch(_ => {});
-			},
-
-			handleClick:function(timeSecond) {				
-				this.$refs.audio0.currentTime = timeSecond;
-				this.$refs.audio0.play();
-			},
-
-			btnPlay: function() {
-				this.$refs.audio0.play();
-			},
-
-			btnPause: function() {
-				this.$refs.audio0.pause();				
-			},
-
-			//#region 导出歌词
-			
-			btnExportLylic: function() {
-				if(this.mRightArr.length <= 0) {
-					this.$notify({
-						type: "error",
-						title: "捕获异常",
-						message: "歌词列表为空值",
-					});
-					return;
-				}
-
-				// 检查是否存在异常
-				const errorArr = this.validateTime();
-				if(errorArr.length > 0) {
-					this.$notify({
-						type: "error",
-						title: "捕获异常",
-						message: "歌词存在异常",
-					});
-					return;
-				}			
-
-				// 拼接歌词文本
-				const r = this.mRightArr.map(item => item.Display).join('\n');
-				
-				// 文本下载
-				let blob = new Blob([r], { type: "text/plain;charset=utf-8" });
-				saveAs(blob, `${this.fileName}.lrc`);
-			},
-
-			tableRowClassName: function({row, rowIndex}) {
-				if(row.IsError) {
-					return 'warning-row';
-				}
-				return '';
-			},
-
-			validateTime: function() {
-				let errorArr = [];
-				for(let i = 0; i < this.mRightArr.length; i++) {
-					if(i == 0) continue;
-					if(this.mRightArr[i-1].Time >= this.mRightArr[i].Time) {
-						errorArr.push(i);
-						this.mRightArr[i].IsError = true;
-					}
-				}
-				return errorArr;
-			},
-
-			//#endregion
-
-		},
-	});
-</script>
-<style>
+		});
+	</script>
+	<style>
 .el-table .warning-row {
 background: oldlace;
 }
@@ -599,43 +126,5 @@ background: #f0f9eb;
 .el-table .cell {
 	font-size: 23px;
 }
-
-
-/* 
-.el-header, .el-footer {
-    background-color: #B3C0D1;
-    color: #333;
-    text-align: center;
-    line-height: 60px;
-  }
-  
-  .el-aside {
-    background-color: #D3DCE6;
-    color: #333;
-    text-align: center;
-    line-height: 200px;
-  }
-  
-  .el-main {
-    background-color: #E9EEF3;
-    color: #333;
-    text-align: center;
-    line-height: 160px;
-  }
-  
-  body > .el-container {
-    margin-bottom: 40px;
-  }
-  
-  .el-container:nth-child(5) .el-aside,
-  .el-container:nth-child(6) .el-aside {
-    line-height: 260px;
-  }
-  
-  .el-container:nth-child(7) .el-aside {
-    line-height: 320px;
-  } 
-
-*/
-</style>
+	</style>
 </html>
