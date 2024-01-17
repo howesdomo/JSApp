@@ -54,6 +54,8 @@ const view_root =
 
             const files = event.target.files;
             const that = this;
+            
+            const maxPadLen = files.length.toString().length; // 总文件数字的长度, 例如 1234, 长度为 4。
 
             //#region 逐个mp3文件分析里面的歌词信息
 
@@ -63,7 +65,8 @@ const view_root =
                 let selectedFile = files[index];
 
                 console.log(`正在分析第 ${(index + 1)} ${selectedFile.name}`);
-                this.mBusyContent = `正在分析第 ${(index + 1)} ${selectedFile.name}`;
+
+                this.mBusyContent = `用户选择共 ${files.length} 个，正在分析第 ${(index + 1).toString().padStart(maxPadLen, '0')}`;
                 
                 // fileReader.readAsArrayBuffer(selectedFile); // 无需fileReader
 
