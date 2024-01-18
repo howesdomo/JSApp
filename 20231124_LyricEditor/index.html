@@ -5,7 +5,7 @@
 		<meta http-equiv=X-UA-Compatible content="IE=edge">
 		<meta name=viewport content="width=device-width,initial-scale=1">
 		
-		<title>歌词编辑器 - 2024.01.05</title>
+		<title>歌词编辑器 - 2024.01.18</title>
 		<!-- import CSS -->
 		<link rel="stylesheet" href="./style/element-ui@2.15.13.css" />
 		<!-- <link rel="stylesheet" href="https://unpkg.com/element-ui@2.15.13/lib/theme-chalk/index.css" /> -->
@@ -30,8 +30,14 @@
 	<script src="./script/element-ui@2.15.13.js"></script>
 	<!-- <script src="https://unpkg.com/element-ui@2.15.13/lib/index.js"></script> -->
 	
+	<!-- 解决 chrome 报错 [Violation]Added non-passive event listener to a scroll-blocking 'mousewheel' event. Consider marking event handler as 'passive' to make the page more responsive -->
+	<script src="./script/default-passive-events@2.0.0.js"></script>
+
 	<!-- 文件保存 -->
 	<script src="./script/FileSaver@2.0.5.js"></script>
+
+	<!-- 读取媒体文件tags信息 -->
+	<script src="./script/jsmediatags@3.9.7.min.js"></script>
 
 
 	<!-- import view -->

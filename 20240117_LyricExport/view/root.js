@@ -105,7 +105,7 @@ const view_root =
             const k0 = Enumerable.from(this.mList).where(i=>i.IsSuccess).count(i => 1);
             const k1 = Enumerable.from(this.mList).where(i=>!i.IsSuccess).count(i => 1);
 
-            this.mListInfo = `共 ${this.mList.length} 个, 成功 ${k0} 个, 失败 ${k1} 个`;
+            this.mListInfo = `成功读取歌词 ${k0} 个，失败 ${k1} 个。合计 ${this.mList.length} 个。`;
 
             // !!!坑点!!! 如果连续两次导入的文件路径一致, 则不会触发 change 事件
             event.target.value = null;

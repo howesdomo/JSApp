@@ -3,7 +3,10 @@ const view_root =
     template: 
 `		<el-container style="height: 100%;">
 <el-header style="background-color: #f0f9eb;">				
-    <el-row style="margin-top: 5px; margin-bottom: 5px;">					
+    <el-row style="margin-top: 5px; margin-bottom: 5px;">
+        <el-button type="primary" @click="btnSelectMP3">打开mp3</el-button>
+        <input ref="upload0" id="btnFileInput" type="file" style="display: none;" @change="upload0_ChangeEvent_Handler" />
+
         <!-- #region 导入歌词按钮 -->
         <el-button type="primary" @click="dialogVisible_ImportLylic = true">导入歌词</el-button>
         <el-dialog title="导入歌词" :visible.sync="dialogVisible_ImportLylic">
@@ -22,9 +25,6 @@ const view_root =
             </el-row>
         </el-dialog>
         <!-- #endregion -->
-                    
-        <el-button type="primary" @click="btnSelectMP3">打开mp3</el-button>
-        <input ref="upload0" id="btnFileInput" type="file" style="display: none;" @change="upload0_ChangeEvent_Handler" />
     
         <el-divider direction="vertical"></el-divider>
 
@@ -284,6 +284,21 @@ const view_root =
                     that.$refs.audio0.src = base64Str;
                     that.btnPlay();
                 };
+
+                jsmediatags.read(selectedFile, {
+                    onSuccess: function(tag) {
+                        if(tag.tags.lyrics && tag.tags.lyrics.lyrics) {
+                            console.debug("歌曲内嵌歌词信息");
+                            console.log(tag.tags.lyrics.lyrics);
+
+                            that.mTempLylic = tag.tags.lyrics.lyrics;
+                            that.importLylic();
+                        }
+                    },
+                    onError: function(error) {
+                        console.log(error)   
+                    }
+                });
             }
         },
         
