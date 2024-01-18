@@ -2,22 +2,69 @@
 <html>
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-		<title>JSApp目录</title>
+		<meta http-equiv=X-UA-Compatible content="IE=edge">
+		<meta name=viewport content="width=device-width,initial-scale=1">
+		
+		<title>JSApp导航页</title>
+		<!-- import CSS -->
+		<link rel="stylesheet" href="./style/element-ui@2.15.13.css" />
+		<!-- <link rel="stylesheet" href="https://unpkg.com/element-ui@2.15.13/lib/theme-chalk/index.css" /> -->
 	</head>
 	<body>
-		<div>
-			<ul>
-				<li><a href="20230725_ZoomInEmoji">01 - emoji放大器</a></li>
-				<li><a href="20230725_TV_IR_Controller">02 - 红外遥控器</a></li>
-				<li><a href="20230725_io-excel">03 - Excel文件读取</a></li>
-				<li><a href="20230912_FengSupplement">04 - 今日补D咩</a></li>
-				<li><a href="20231124_LyricEditor">05 - 歌词编辑器</a></li>
-				<li><a href="20231205_Puzzle_And_Dragon">06 - 智龙迷城合作搜索</a></li>
-				<li><a href="20231206_ClassicalChineseReading">07 - 古诗文</a></li>
-				<li><a href="20231228_FakeUncleAunty">08 - AI叔叔姨姨</a></li>
-				<li><a href="20240117_LyricExport">09 - 歌词导出</a></li>
-			</ul>
+		<div id="app">
+			<router-view></router-view>
 		</div>
 	</body>
+	<!-- import Vue before Element -->
+	<script src="./script/vue@2.7.16.js"></script>
+	<!-- 开发环境版本 -->
+	<!-- <script src="https://unpkg.com/vue@2.7.16/dist/vue.js"></script> -->
+	<!-- 生产环境版本 -->
+	<!-- <script src="https://unpkg.com/vue@2.7.16/dist/vue.min.js"></script> -->	
+
+	<!-- import Vue Router -->
+	<script src="./script/vue-router@3.6.5.js"></script>
+	<!-- <script src="https://unpkg.com/vue-router@3.6.5/dist/vue-router.js"></script> -->
+
+	<!-- import JavaScript -->
+	<script src="./script/element-ui@2.15.13.js"></script>
+	<!-- <script src="https://unpkg.com/element-ui@2.15.13/lib/index.js"></script> -->
+
+	<!-- 解决 chrome 报错 [Violation]Added non-passive event listener to a scroll-blocking 'mousewheel' event. Consider marking event handler as 'passive' to make the page more responsive -->
+	<script src="./script/default-passive-events@2.0.0.js"></script>
+
+	<script src="./script/axios@1.4.0.js"></script>
+	<script src="./script/linq@3.2.0.js"></script>
+	<script src="./script/jsonp@0.0.1.js"></script>
+
+	<!-- import view -->
+	<script src="./view/root.js"></script>
+	<script src="./view/TODO.js"></script>
+
+	<script>
+		//#region 创建路由实例并配置路由规则
+		const routerArr = [
+				{ path: '/', component: view_root, IsIgnore: true }, // 根路由
+				{ path: '/view/Screen', component: view_TODO, DisplayName: "屏幕" },
+				{ path: '/view/Audio', component: view_TODO, DisplayName: "音频" },
+		];
+
+		const router = new VueRouter({ routes: routerArr });
+		//#endregion
+
+		var vueApp = new Vue({
+			el: "#app",
+			router, // 注入路由
+			data: function () {
+				return {
+
+				};
+			},
+			methods: {
+				
+			},
+		});
+	</script>
+	<style>		
+	</style>
 </html>
