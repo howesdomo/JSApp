@@ -15,8 +15,8 @@ const view_ForBrushTeeth =
             mArray: [
                 {
                     "ID": "2023-12-07 15:39:15",
-                    "DisplayName": "边个小朋友系度玩水。叔叔我要批评佢！",
-                    "Value": "边个小朋友系度玩水。叔叔我要批评佢！",
+                    "DisplayName": "边个小朋友系度玩水。边个玩水就批评佢！",
+                    "Value": "边个小朋友系度玩水。边个玩水就批评佢！",
                     "Pitch": 0.9,
                     "SpeechRate": 1.2
                 },
