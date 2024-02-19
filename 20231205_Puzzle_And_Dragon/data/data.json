@@ -10,6 +10,11 @@
         "DateTimeInfo": "2024-12-25"
     },
     {
+        "Value": "バレンタイン",
+        "Keyword": ["西方情人节", "Valentine's Day"],
+        "DateTimeInfo": "2024-12-25"
+    },
+    {
         "Value": "学園",
         "Keyword": ["学院", "新学期", "学生会"],
         "DateTimeInfo": "2023-12-25",
@@ -41,7 +46,7 @@
 
     {
         "Value": "ジョジョの奇妙な冒険",
-        "Keyword": ["JOJO的奇妙冒险"],
+        "Keyword": ["JOJO的奇妙冒险", "jojo"],
         "DateTimeInfo": "2023-11-27"
     },
     {
@@ -81,7 +86,7 @@
     },
     {
         "Value": "呪術廻戦",
-        "Keyword": ["咒术回战", "5t5"],
+        "Keyword": ["咒术回战", "5t5", "五条悟"],
         "DateTimeInfo": "2023-11-27"
     },
     {
