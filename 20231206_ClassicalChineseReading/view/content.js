@@ -37,12 +37,20 @@ const view_Content =
             </el-button>
         </el-row>
     </el-row>
+<!--
+    <el-row>
+        <el-input v-model="input" placeholder="请输入内容"></el-input>
+    </el-row>
+-->
 </div>`,
     data: function ()
     {
         return {
             mIsPlaying: false,
-            mData: {}
+            mData: {},
+
+
+            input: ""
         };
     },
     mounted: function() {
@@ -80,15 +88,49 @@ const view_Content =
 
             this.mIsPlaying = true;
 
-            $device.Play_WaitForPrevious(this.mData.Title);
+            // TODO 用 Promise 封装 $device.TTS_Play_WaitForPrevious, 看看能否解决漏斗(卡顿问题)
+            // $device.TTS_Play_WaitForPrevious(this.mData.Title, $WebViewHashCode);
 
-            $device.Play_WaitForPrevious(this.mData.Author);
+            // $device.TTS_Play_WaitForPrevious(this.mData.Author, $WebViewHashCode);
+
+            // this.mData.Content.forEach(item => {
+            //     $device.TTS_Play_WaitForPrevious(item, $WebViewHashCode);
+            // });
+            
+            let args = { "WebView_HashCode" : $WebViewHashCode, "Data" : "123" };
+
+            args.Data = this.mData.Title;
+            $device.TTS_Play2(JSON.stringify(args));
+
+            args.Data = this.mData.Author;
+            $device.TTS_Play2(JSON.stringify(args));
 
             this.mData.Content.forEach(item => {
-                $device.Play_WaitForPrevious(item);
+                args.Data = item;
+                $device.TTS_Play2(JSON.stringify(args));
             });
 
             this.mIsPlaying = false;
-        }
+        },
+
+        execute_read_mp3_lyrics_Stepbystep: function (selectedFile) {
+            // 使用 await Promise 实现逐个 mp3 文件进行分析
+            return new Promise(function(resolve, reject) {
+                jsmediatags.read(selectedFile, {
+                    onSuccess: function(tag) {
+                        if(tag.tags.lyrics && tag.tags.lyrics.lyrics) {
+                            resolve(tag);   
+                        }
+                        else {
+                            reject(`没有歌词信息. tag.tags.lyrics is undefined`);
+                        }   
+                    },
+                    onError: function(error) {
+                        reject(error);
+                    }
+                });
+            });
+        },
+
     }
 };
