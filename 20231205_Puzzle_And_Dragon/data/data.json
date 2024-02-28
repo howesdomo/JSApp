@@ -21,8 +21,16 @@
         "FixMe": "会搜索到网球王子还有CROWS的怪物"
     },
 
-
-
+    {
+        "Value": "歴世の杯",
+        "Keyword": ["酒保"],
+        "DateTimeInfo": "2024-02-28"
+    },
+    {
+        "Value": "初音ミク",
+        "Keyword": ["初音未来", "Miku", "镜音"],
+        "DateTimeInfo": "2024-02-22"
+    },
     {
         "Value": "チェンソーマン",
         "Keyword": ["电锯人"],
