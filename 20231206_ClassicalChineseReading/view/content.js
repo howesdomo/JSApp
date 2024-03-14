@@ -49,6 +49,7 @@ const view_Content =
             mIsPlaying: false,
             mData: {},
 
+            mDateTime: null,
 
             input: ""
         };
@@ -71,12 +72,29 @@ const view_Content =
                 return;
             }
 
+            let now = Date.now();
+            if(this.mDateTime)
+            {
+                if(now - this.mDateTime < 5 * 1000)
+                {
+                    console.error(`播放按得太快了`);
+                    return;
+                }
+            }
+
             this.mIsPlaying = true;
+            
+            try 
+            {
+                this.mDateTime = now;
 
-            const text = arguments[0];
-            $device.TTS_Play(text);
-
-            this.mIsPlaying = false;
+                const text = arguments[0];
+                $device.TTS_Play(text);                
+            }
+            finally
+            {
+                this.mIsPlaying = false; 
+            }
         },
         btnPlay_OnClick: function() {
             this.auto_play();
@@ -86,51 +104,39 @@ const view_Content =
                 return;
             }
 
+            let now = Date.now();
+            if(this.mDateTime)
+            {
+                if(now - this.mDateTime < 5 * 1000)
+                {
+                    console.error(`播放按得太快了`);
+                    return;
+                }
+            }
+
             this.mIsPlaying = true;
+            try
+            {
+                this.mDateTime = now;
 
-            // TODO 用 Promise 封装 $device.TTS_Play_WaitForPrevious, 看看能否解决漏斗(卡顿问题)
-            // $device.TTS_Play_WaitForPrevious(this.mData.Title, $WebViewHashCode);
+                let args = { "WebView_HashCode" : $WebViewHashCode, "Data" : "TODO" };
 
-            // $device.TTS_Play_WaitForPrevious(this.mData.Author, $WebViewHashCode);
-
-            // this.mData.Content.forEach(item => {
-            //     $device.TTS_Play_WaitForPrevious(item, $WebViewHashCode);
-            // });
-            
-            let args = { "WebView_HashCode" : $WebViewHashCode, "Data" : "123" };
-
-            args.Data = this.mData.Title;
-            $device.TTS_Play2(JSON.stringify(args));
-
-            args.Data = this.mData.Author;
-            $device.TTS_Play2(JSON.stringify(args));
-
-            this.mData.Content.forEach(item => {
-                args.Data = item;
+                args.Data = this.mData.Title;
                 $device.TTS_Play2(JSON.stringify(args));
-            });
-
-            this.mIsPlaying = false;
-        },
-
-        execute_read_mp3_lyrics_Stepbystep: function (selectedFile) {
-            // 使用 await Promise 实现逐个 mp3 文件进行分析
-            return new Promise(function(resolve, reject) {
-                jsmediatags.read(selectedFile, {
-                    onSuccess: function(tag) {
-                        if(tag.tags.lyrics && tag.tags.lyrics.lyrics) {
-                            resolve(tag);   
-                        }
-                        else {
-                            reject(`没有歌词信息. tag.tags.lyrics is undefined`);
-                        }   
-                    },
-                    onError: function(error) {
-                        reject(error);
-                    }
+    
+                args.Data = this.mData.Author;
+                $device.TTS_Play2(JSON.stringify(args));
+    
+                this.mData.Content.forEach(item => 
+                {
+                    args.Data = item;
+                    $device.TTS_Play2(JSON.stringify(args));
                 });
-            });
-        },
-
+            }
+            finally
+            {
+                this.mIsPlaying = false;
+            }            
+        }
     }
 };
