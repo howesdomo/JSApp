@@ -32,6 +32,7 @@ const view_root =
                 { "Index": 6, "title": "古诗文", "href": "20231206_ClassicalChineseReading", "GroupKey": 1 },
                 { "Index": 7, "title": "虚拟叔叔姨姨", "href": "20231228_FakeUncleAunty", "GroupKey": 1 },
                 { "Index": 8, "title": "歌词导出", "href": "20240117_LyricExport", "GroupKey": 3 },
+                { "Index": 9, "title": "学习颜色", "href": "20240314_LearningColor", "GroupKey": 1 },
             ],
             mActiveNames: [0, 1, 2, 3, 4], // 展开的栏位
         };

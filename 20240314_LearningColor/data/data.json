@@ -1,0 +1,62 @@
+[
+    {
+        "Key": "#ffffff",
+        "Chinese": "白色",
+        "English": "White"
+    },
+    {
+        "Key": "#000000",
+        "Chinese": "黑色",
+        "English": "Black"
+    },
+    {
+        "Key": "#ed1c24",
+        "Chinese": "红色",
+        "English": "Red"
+    },    
+    {
+        "Key": "#ff7f27",
+        "Chinese": "橙色",
+        "English": "Orange"
+    },
+    {
+        "Key": "#fff200",
+        "Chinese": "黄色",
+        "English": "Yellow"
+    },
+    {
+        "Key": "#22b14c",
+        "Chinese": "绿色",
+        "English": "Green"
+    },
+    {
+        "Key": "#00a2e8",
+        "Chinese": "蓝色",
+        "English": "Blue"
+    },
+    {
+        "Key": "#a349a4",
+        "Chinese": "紫色",
+        "English": "Purple"
+    },
+    {
+        "Key": "#6f432a",
+        "Chinese": "棕色",
+        "English": "Brown"
+    },
+    {
+        "Key": "#696969",
+        "Chinese": "灰色",
+        "English": "Gray"
+    },
+    {
+        "Key": "#ffaec9",
+        "Chinese": "粉红色",
+        "English": "Pink"
+    },
+    {
+        "Key": "#00ffff",
+        "Chinese": "青色",
+        "English": "Cyan"
+    }
+]
