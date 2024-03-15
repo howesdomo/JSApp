@@ -43,8 +43,7 @@
 
 	<!-- import view -->
 	<script src="./view/root.js"></script>
-	<script src="./view/TTS.js"></script>
-	<script src="./view/content.js"></script>
+	<script src="./view/TTS.js"></script>	
 
 	<script src="./view/TODO.js"></script>
 
@@ -53,8 +52,7 @@
 
 		//#region 创建路由实例并配置路由规则
 		const routerArr = [
-				{ path: '/', component: view_Root, IsIgnore: true }, // 根路由
-				{ path: '/view/Content', component: view_Content, IsIgnore: true }, // 内容
+				{ path: '/', component: view_Root, IsIgnore: true }, // 根路由				
 				{ path: '/view/TTS', component: view_TTS, DisplayName: "TTS语音引擎" },
 		];
 
