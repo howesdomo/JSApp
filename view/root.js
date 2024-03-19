@@ -21,6 +21,7 @@ const view_root =
                 { "Key": 2, "Name": "办公", "Seq": 2 },
                 { "Key": 3, "Name": "音乐", "Seq": 3 },
                 { "Key": 4, "Name": "游戏", "Seq": 4 },
+                { "Key": 5, "Name": "学习", "Seq": 5 },
             ],
             mData: [
                 { "Index": 0, "title": "emoji放大器", "href": "20230725_ZoomInEmoji", "GroupKey": 1 },
@@ -33,8 +34,9 @@ const view_root =
                 { "Index": 7, "title": "虚拟叔叔姨姨", "href": "20231228_FakeUncleAunty", "GroupKey": 1 },
                 { "Index": 8, "title": "歌词导出", "href": "20240117_LyricExport", "GroupKey": 3 },
                 { "Index": 9, "title": "学习颜色", "href": "20240314_LearningColor", "GroupKey": 1 },
+                { "Index": 10, "title": "学习日文笔顺", "href": "20240319_LearningJapaneseWritingStep", "GroupKey": 5 },
             ],
-            mActiveNames: [0, 1, 2, 3, 4], // 展开的栏位
+            mActiveNames: [0, 1, 2, 3, 4, 5], // 展开的栏位
         };
     },
     mounted: function() {
