@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv=X-UA-Compatible content="IE=edge">
+		<meta name=viewport content="width=device-width, initial-scale=1.0, user-scalable=no">
+		
+		<title>🌽🫘解密</title>
+		<!-- import CSS -->
+		<link rel="stylesheet" href="./style/element-ui@2.15.13.css" />
+		<!-- <link rel="stylesheet" href="https://unpkg.com/element-ui@2.15.13/lib/theme-chalk/index.css" /> -->
+	</head>
+	<body>
+		<div id="app">
+			<router-view></router-view>
+		</div>
+	</body>
+	<!-- import Vue before Element -->
+	<script src="./script/vue@2.7.14.js"></script>
+	<!-- <script src="https://unpkg.com/vue@2.7.14/dist/vue.js"></script> -->
+
+	<!-- import Vue Router -->
+	<script src="./script/vue-router@3.6.5.js"></script>
+	<!-- <script src="https://unpkg.com/vue-router@3.6.5/dist/vue-router.js"></script> -->
+
+	<!-- import JavaScript -->
+	<script src="./script/element-ui@2.15.13.js"></script>
+	<!-- <script src="https://unpkg.com/element-ui@2.15.13/lib/index.js"></script> -->
+
+	<!-- 解决以下 warning 的显示  el-drawer 里面嵌入 el-table 显示会出现
+		element-ui@2.15.13.js
+		[Violation]Added non-passive event listener to a scroll-blocking 'mousewheel' event. Consider marking event handler as 'passive' to make the page more responsive. 
+		只需添加 default-passive-events 的引用
+	-->
+	<script src="./script/default-passive-events@2.0.0.js"></script>
+	
+	<script src="./script/cryptojs@4.1.1.js"></script>
+
+	<!-- import my component-->
+	<!-- <script src="./component/ho-js-version.js"></script> -->
+
+	<!-- import view -->
+	<script src="./view/root.js"></script>
+
+	<script>
+		//#region 创建路由实例并配置路由规则
+		const routerArr = [
+				{ path: '/', component: view_Root, IsIgnore: true }, // 根路由
+				// { path: '/view/Content', component: view_Content, IsIgnore: true }, // 内容
+				// { path: '/view/TTS', component: view_TTS, DisplayName: "TTS语音引擎" },
+		];
+
+		const router = new VueRouter({ routes: routerArr });
+		//#endregion
+		
+		var vueApp = new Vue({
+			el: "#app",
+			router, // 注入路由
+			data: function () {
+				return {
+					mMenuContent: "首页"
+				};
+			},
+			methods: {
+
+			},
+		});
+	</script>
+	<style>		
+	</style>
+</html>
