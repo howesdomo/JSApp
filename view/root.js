@@ -37,6 +37,7 @@ const view_root =
                 { "Index": 10, "title": "学习日文笔顺", "href": "20240319_LearningJapaneseWritingStep", "GroupKey": 5 },
                 { "Index": 11, "title": "条码绘制_bwip-js_Demo", "href": "20240320_Barcode_bwip-js", "GroupKey": 2 },
                 { "Index": 12, "title": "🌽🫘解密", "href": "20240420_YuDouJieMi", "GroupKey": 2 },
+                { "Index": 13, "title": "立邦喷码列表录入串口助手", "href": "20240513_NipponSerialPortSender", "GroupKey": 2 },
             ],
             mActiveNames: [0, 1, 2, 3, 4, 5], // 展开的栏位
         };
