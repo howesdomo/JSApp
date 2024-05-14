@@ -3,9 +3,9 @@ const view_root =
     template: 
 `<div style="margin: 5px 25px">
     <el-collapse v-model="mActiveNames" @change="handleChange">
-        <el-collapse-item v-for="group in mGroupList" :title="group.Name" :name="group.Key">            
+        <el-collapse-item v-for="group in mGroupList" :title="group.Name" :name="group.Key" :key="group.Key">            
             <div v-for="item in mData" v-if="group.Key == item.GroupKey"
-                style="margin-top: 15px"
+                style="margin-top: 15px" 
             >
                 <el-link type="primary" :href="item.href">{{ (item.Index + 1).toString().padStart(2, '0') }} - {{ item.title }}</el-link>
             </div>
@@ -38,6 +38,7 @@ const view_root =
                 { "Index": 11, "title": "条码绘制_bwip-js_Demo", "href": "20240320_Barcode_bwip-js", "GroupKey": 2 },
                 { "Index": 12, "title": "🌽🫘解密", "href": "20240420_YuDouJieMi", "GroupKey": 2 },
                 { "Index": 13, "title": "立邦喷码列表录入串口助手", "href": "20240513_NipponSerialPortSender", "GroupKey": 2 },
+                { "Index": 14, "title": "串口助手_拷贝来自 itldg.github.io/web-serial-debug", "href": "20240514_Web_SerialPort", "GroupKey": 2 },
             ],
             mActiveNames: [0, 1, 2, 3, 4, 5], // 展开的栏位
         };
@@ -46,6 +47,8 @@ const view_root =
         this.mGroupList = Enumerable.from(this.mGroupList).orderBy(i => i.Seq).toArray(); // 按 Seq 重新排序
     },
     methods: {
-        
+        handleChange: function() {
+
+        }
     }
 };
