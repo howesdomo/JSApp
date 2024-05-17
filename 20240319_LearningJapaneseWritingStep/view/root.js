@@ -83,8 +83,8 @@ const view_Root =
                 .then((data)=>{
                     data.forEach(i=> {
                         // 组织图片资源路径
-                        i.HiraganaImage = `/20240319_LearningJapaneseWritingStep/img/Hiragana/${i.ID}_${i.Content}.gif`;
-                        i.KatakanaImage = `/20240319_LearningJapaneseWritingStep/img/Katakana/${i.ID}_${i.Content}.gif`;
+                        i.HiraganaImage = `/JSApp/20240319_LearningJapaneseWritingStep/img/Hiragana/${i.ID}_${i.Content}.gif`;
+                        i.KatakanaImage = `/JSApp/20240319_LearningJapaneseWritingStep/img/Katakana/${i.ID}_${i.Content}.gif`;
                     });
                         
                     this.mArray = data;
