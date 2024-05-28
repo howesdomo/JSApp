@@ -40,6 +40,7 @@ const view_root =
                 { "Index": 13, "title": "立邦喷码列表录入串口助手", "href": "20240513_NipponSerialPortSender", "GroupKey": 2 },
                 { "Index": 14, "title": "串口助手_拷贝来自 itldg.github.io/web-serial-debug", "href": "20240514_Web_SerialPort", "GroupKey": 2 },
                 { "Index": 15, "title": "QR幻灯片播放", "href": "20240528_QRCodeSlider", "GroupKey": 2 },
+                { "Index": 16, "title": "QR幻灯片播放(无限数量)", "href": "20240529_QRCodeSlider_Infinite", "GroupKey": 2 },
             ],
             mActiveNames: [0, 1, 2, 3, 4, 5], // 展开的栏位
         };
