@@ -49,17 +49,25 @@ const view_Root =
     computed: {
         txtMatchBlackCat: function() {
             if(this.txtData) {
-                return this.txtData.match("http://[A-Za-z0-9/.]{1,}.yaml")[0];
+                const arr = this.txtData.match("http[s]://[A-Za-z0-9/.-]{1,}.yaml");
+                if(arr == null)
+                    return "0"
+                else
+                    return arr[0];
             }
             else
-                return "";
+                return "null";
         },
         txtMatchV2: function() {
             if(this.txtData) {
-                return this.txtData.match("http://[A-Za-z0-9/.]{1,}.txt")[0];
+                const arr = this.txtData.match("http[s]://[A-Za-z0-9/.-]{1,}.txt");
+                if(arr == null)
+                    return "0"
+                else
+                    return arr[0];
             }
             else
-                return "";
+                return "null";
         }
     },
     methods: {
