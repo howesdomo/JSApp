@@ -119,18 +119,12 @@ const view_Content =
             {
                 this.mDateTime = now;
 
-                let args = { "WebView_HashCode" : $WebViewHashCode, "Data" : "TODO" };
-
-                args.Data = this.mData.Title;
-                $device.TTS_Play2(JSON.stringify(args));
-    
-                args.Data = this.mData.Author;
-                $device.TTS_Play2(JSON.stringify(args));
+                $device.TTS_Play2(this.mData.Title);    
+                $device.TTS_Play2(this.mData.Author);
     
                 this.mData.Content.forEach(item => 
                 {
-                    args.Data = item;
-                    $device.TTS_Play2(JSON.stringify(args));
+                    $device.TTS_Play2(item);
                 });
             }
             finally
