@@ -1,40 +1,42 @@
+// V 1.0.1 -- 2024-06-12 15:56:30
+// 1. 增加倒计时
+// 2. 优化UI界面 调整条码位置
 const view_Root =
 {
     template: 
 `<div>
     <el-collapse v-model="mActiveName">
-        <el-collapse-item name="1" title="1. 生产条码列表">
-        <el-tabs type="border-card" v-model="mTabs_ActiveName">
-            <el-tab-pane label="计算条码流水号" name="1-1">            
-                <el-form :model="mSearchArgs" label-width="120px">
-                    <el-form-item label="内容">
-                        <el-input v-model="mSearchArgs.Content"></el-input>
-                    </el-form-item>
-                    <el-form-item label="数量">
-                        <el-input v-model="mSearchArgs.Qty"></el-input>
-                    </el-form-item>
-                    <el-form-item label="流水号起始位置">
-                        <el-input v-model="mSearchArgs.SNStartAtIndex"></el-input>
-                    </el-form-item>
-                    <el-form-item label="流水号长度">
-                        <el-input v-model="mSearchArgs.SNLength"></el-input>
-                    </el-form-item>
-        
-                    <el-form-item>
-                        <el-button type="primary" @click="calcData">计算数据</el-button>                    
-                    </el-form-item>
-                </el-form>
-            </el-tab-pane>
-            <el-tab-pane label="导入文本文档" name="1-2">
-                <div>
-                    <el-button @click="btnImportTXT">导入文本</el-button>
-                    <input ref="upload0" id="btnFileInput" type="file" style="display: none;" @change="upload0_ChangeEvent_Handler" />
-                </div>
-            </el-tab-pane>
-        </el-tabs>
-
+        <el-collapse-item name="1" title="1. 制作条码列表">
+            <el-tabs type="border-card" v-model="mTabs_ActiveName">
+                <el-tab-pane label="计算条码流水号" name="1-1">            
+                    <el-form :model="mSearchArgs" label-width="120px">
+                        <el-form-item label="内容">
+                            <el-input v-model="mSearchArgs.Content"></el-input>
+                        </el-form-item>
+                        <el-form-item label="数量">
+                            <el-input v-model="mSearchArgs.Qty"></el-input>
+                        </el-form-item>
+                        <el-form-item label="流水号起始位置">
+                            <el-input v-model="mSearchArgs.SNStartAtIndex"></el-input>
+                        </el-form-item>
+                        <el-form-item label="流水号长度">
+                            <el-input v-model="mSearchArgs.SNLength"></el-input>
+                        </el-form-item>
+            
+                        <el-form-item>
+                            <el-button type="primary" @click="calcData">计算数据</el-button>                    
+                        </el-form-item>
+                    </el-form>
+                </el-tab-pane>
+                <el-tab-pane label="导入文本文档" name="1-2">
+                    <div>
+                        <el-button @click="btnImportTXT">导入文本</el-button>
+                        <input ref="upload0" id="btnFileInput" type="file" style="display: none;" @change="upload0_ChangeEvent_Handler" />
+                    </div>
+                </el-tab-pane>
+            </el-tabs>
         </el-collapse-item>
-        <el-collapse-item name="2" title="2. 条码列表">
+        <el-collapse-item name="2" title="2. 显示条码列表">
             <el-table
                 ref="myTable"
                 :data="mArray"
@@ -53,16 +55,33 @@ const view_Root =
                 </el-table-column>
             </el-table>
         </el-collapse-item>
-        <el-collapse-item name="3" title="3. 幻灯片播放">
+        <el-collapse-item name="3" title="3. 条码格式">
+            <el-form :model="mSliderArgs" label-width="120px">
+                <el-form-item label="条码格式">
+                    <el-select v-model="mBarcodeType_sym" placeholder="请选择条码格式">
+                        <el-option
+                            v-for="item in mBarcodeTypeArr"
+                            :key="item.sym"
+                            :label="item.desc"
+                            :value="item.sym">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="条码比例 (Scale)">
+                    <el-input-number v-model="mScale" :min="1" :max="20" @change="render(mQueue.items[mIndex])"></el-input-number>
+                </el-form-item>
+                <el-form-item label="显示条码内容">
+                    <el-checkbox v-model="mShowContentText">显示</el-checkbox>
+                </el-form-item>
+            </el-form>
+        </el-collapse-item>
+        <el-collapse-item name="4" title="4. 幻灯片播放">
             <el-form :model="mSliderArgs" label-width="120px">
                 <el-form-item label="翻页间隔(毫秒)">
                     <el-input v-model="mSliderArgs.Interval"></el-input>
                 </el-form-item>
                 <el-form-item label="翻页页数">                    
                     <el-input v-model="mSliderArgs.PlusX"></el-input>
-                </el-form-item>
-                <el-form-item label="条码比例 (Scale)">
-                    <el-input-number v-model="mScale" :min="1" :max="20" @change="render(mArray[mIndex])"></el-input-number>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="playSlider" :loading="IsSliderPlaying">幻灯片播放</el-button>
@@ -71,53 +90,147 @@ const view_Root =
             </el-form>
         </el-collapse-item>
     </el-collapse>
-    <el-row style="margin-top: 10px">
-        <el-col :span="1">
+
+    <div style="margin-top: 10px;">    
+        <div v-if="mScreenKeepOn_IsVisible">
+            <el-tag
+                v-if="mScreenKeepOn_Checkbox_Disable" 
+                type="danger">{{mScreenKeepOn_Checkbox_DisableReason}}</el-tag>
+
+            <el-divider 
+                v-if="mScreenKeepOn_Checkbox_Disable"
+                direction="vertical" ></el-divider>
+
+            <el-checkbox 
+                :disabled="mScreenKeepOn_Checkbox_Disable"
+                v-model="mScreenKeepOn"
+                @change="screenKeepOn_OnChanged">屏幕常亮</el-checkbox>
+        </div>
+
+        <el-statistic v-if="mIntervalId" :value="mDeadline" time-indices></el-statistic>
+
+        <div style="display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; justify-content: flex-start;">
             <el-button icon="el-icon-moon" circle @click="mMarginBar_Visible = !mMarginBar_Visible"></el-button>
-        </el-col>
-        <el-col :span="23">
-            <el-slider v-if="mMarginBar_Visible" v-model="mMarginLeft" :min="0" :max="1920"></el-slider>
-        </el-col>
-    </el-row>
-    <el-row>
-        <el-col :span="1">
-            <el-slider v-if="mMarginBar_Visible" v-model="mMarginTop" vertical height="600px" :min="-1080" :max="1080"></el-slider>
-        </el-col>
-        <el-col :span="23">
+            <div style="width: 20px"></div>
+            <el-slider v-if="mMarginBar_Visible" v-model="mMarginLeft" :min="mMarginLeft_Min" :max="mMarginLeft_Max" style="width: 100%; margin-left: auto;"></el-slider>
+        </div>
+
+        <div style="display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; justify-content: flex-start;">
             <canvas ref="myCanvas" :style="canvasStyle"></canvas>
-        </el-col>                
-    </el-row>
+            <el-slider v-if="mMarginBar_Visible" v-model="mMarginTop" vertical height="600px" :min="mMarginTop_Min" :max="mMarginTop_Max" style="margin-top: 10px; margin-left: auto;"></el-slider>
+        </div>
+
+    </div>
 </div>`,
     data: function ()
     {
         return {
 
-            mActiveName: ['2', '3'],
+            mActiveName: ['2', '4'],
 
             mTabs_ActiveName: '1-1',
 
             mTable_Height: 300,
             mArray: [], // 数据从 data.json 文件中获取
             
-            // mSearchArgs: new SearchArgs(`ABC0001XYZ`, 10, 3, 4),
+            // mSearchArgs: new SearchArgs(`E01107`, 99, 1, 5),
+            mSearchArgs: new SearchArgs(`ABC0001XYZ`, 10, 3, 4),            
             
-            mSearchArgs: new SearchArgs(`E01107`, 99, 1, 5),
             mSliderArgs: {
                 Interval: 10000,
                 PlusX: 1,
             },
-            mScale: 5,
+            mScale: 2,
 
             mIntervalId: null,
+            mDeadline: null, // 下一个条码倒计时
             mIndex: 0,
 
             mMarginBar_Visible: false,
+            
+            mMarginLeft_Min: 0,
+            mMarginLeft_Max: 0,
             mMarginLeft: 0,
+
+            mMarginTop_Min: 0,
+            mMarginTop_Max: 0,
             mMarginTop: 0,
+
+
+            mBarcodeTypeArr: [    
+                {
+                    sym: "qrcode",
+                    desc: "QR Code",
+                    text: "http://goo.gl/0bis",
+                    opts: "eclevel=M"
+                },
+                {
+                    sym: "ean13",
+                    desc: "EAN-13",
+                    text: "9520123456788",
+                    opts: "includetext guardwhitespace"
+                },
+                {
+                    sym: "code128",
+                    desc: "Code 128",
+                    text: "Count01234567!",
+                    opts: "includetext"
+                },
+                {
+                    sym: "code39",
+                    desc: "Code 39",
+                    text: "THIS IS CODE 39",
+                    opts: "includetext includecheck includecheckintext"
+                },
+                {
+                    sym: "code93",
+                    desc: "Code 93",
+                    text: "THIS IS CODE 93",
+                    opts: "includetext includecheck"
+                },
+                {
+                    sym: "datamatrix",
+                    desc: "Data Matrix",
+                    text: "This is Data Matrix!",
+                    opts: ""
+                }],
+                mBarcodeType_sym: "qrcode",
+                mBarcodeType: null,
+    
+                mShowContentText: true,
+
+
+
+            //#region 屏幕常亮
+
+            mScreenKeepOn_IsVisible: true,
+            mScreenKeepOn_Checkbox_Disable: true,
+            mScreenKeepOn_Checkbox_DisableReason: "找不到 $device 对象",
+            mScreenKeepOn: false
+            
+            //#endregion
         };
     },
     mounted: function() {
+        this.mMarginLeft_Min = -window.innerWidth / 3;
+        this.mMarginLeft_Max = window.innerWidth;
+
+        this.mMarginTop_Min = -window.innerHeight / 6;
+        this.mMarginTop_Max = window.innerHeight;
+
         this.calcData();
+
+        //#region 屏幕常亮
+        try
+        {
+            this.mScreenKeepOn = ( this.getScreenKeepOn() === "true"? true : false );
+            this.Permission_Check();
+        }
+        catch(e)
+        {
+            this.mScreenKeepOn_IsVisible = false;
+        }
+        //#endregion
     },
     computed: {
         IsSliderPlaying() {
@@ -245,6 +358,8 @@ const view_Root =
         },
 
         drawBarcode: function() {
+            this.mDeadline = Date.now() + this.mSliderArgs.Interval;
+
             let data = this.mArray[this.mIndex];
             
             this.render(data);
@@ -272,21 +387,22 @@ const view_Root =
         },
 
         render: function() {
-            let opts = {};
-
-            let a0 = arguments[0];
-            
-            opts.text = a0.Content;
-            opts.alttext = a0.Content;
-            opts.scaleX = this.mScale;
-            opts.scaleY = this.mScale;
-
-            const canvas = this.$refs.myCanvas;
-
-            opts.bcid = "qrcode";
-
             try 
             {
+                let a0 = arguments[0];
+                
+                let opts = {};
+                
+                opts.bcid = this.mBarcodeType_sym;
+                opts.text = a0.Content;
+                if(this.mShowContentText)
+                {
+                    opts.alttext = a0.Content;
+                }
+                opts.scaleX = this.mScale;
+                opts.scaleY = this.mScale;
+
+                const canvas = this.$refs.myCanvas;
                 bwipjs.toCanvas(canvas, opts);
             } 
             catch(e) 

@@ -96,7 +96,7 @@ const view_Root =
         <el-button icon="el-icon-moon" circle @click="mMarginBar_Visible = !mMarginBar_Visible"></el-button>
         <div style="width: 20px"></div>
         <el-slider v-if="mMarginBar_Visible" v-model="mMarginLeft" :min="mMarginLeft_Min" :max="mMarginLeft_Max" style="width: 100%; margin-left: auto;"></el-slider>
-    </div>    
+    </div>
 
     <el-row>
         <el-col :span="22">
@@ -106,8 +106,6 @@ const view_Root =
             <el-slider v-if="mMarginBar_Visible" v-model="mMarginTop" vertical height="600px" :min="mMarginTop_Min" :max="mMarginTop_Max" style="margin-top: 10px;"></el-slider>
         </el-col>
     </el-row>
-
-    
 </div>`,
     data: function ()
     {
@@ -197,7 +195,7 @@ const view_Root =
 
             //#region 屏幕常亮
 
-            mScreenKeepOn_IsVisible: false,
+            mScreenKeepOn_IsVisible: true,
             mScreenKeepOn_Checkbox_Disable: true,
             mScreenKeepOn_Checkbox_DisableReason: "找不到 $device 对象",
             mScreenKeepOn: false
@@ -224,7 +222,7 @@ const view_Root =
         {
             this.mScreenKeepOn_IsVisible = false;
         }
-        //#endregion 
+        //#endregion
     },
     computed: {
         IsSliderPlaying() {
@@ -367,7 +365,7 @@ const view_Root =
             {
                 let a0 = arguments[0];
                 
-                let opts = {};                
+                let opts = {};
                 
                 opts.bcid = this.mBarcodeType_sym;
                 opts.text = a0.Content;
