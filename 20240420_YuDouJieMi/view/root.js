@@ -44,12 +44,12 @@ const view_Root =
         };
     },
     mounted: function() {
-        this.getData();
+        
     },
     computed: {
         txtMatchBlackCat: function() {
             if(this.txtData) {
-                const arr = this.txtData.match("http[s]://[A-Za-z0-9/.-]{1,}.yaml");
+                const arr = this.txtData.match("http[s]?://[A-Za-z0-9/.-]{1,}.yaml");
                 if(arr == null)
                     return "0"
                 else
@@ -60,7 +60,7 @@ const view_Root =
         },
         txtMatchV2: function() {
             if(this.txtData) {
-                const arr = this.txtData.match("http[s]://[A-Za-z0-9/.-]{1,}.txt");
+                const arr = this.txtData.match("http[s]?://[A-Za-z0-9/.-]{1,}.txt");
                 if(arr == null)
                     return "0"
                 else

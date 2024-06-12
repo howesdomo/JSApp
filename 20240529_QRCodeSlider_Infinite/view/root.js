@@ -1,3 +1,6 @@
+// V 1.0.1 -- 2024-06-12 15:56:30
+// 1. 增加倒计时
+// 2. 优化UI界面 调整条码位置
 const view_Root =
 {
     template: 
@@ -14,16 +17,33 @@ const view_Root =
                 <el-form-item label="流水号长度">
                     <el-input v-model="mSearchArgs.SNLength"></el-input>
                 </el-form-item>
-    
+                <el-form-item label="条码格式">
+                    <el-select v-model="mBarcodeType_sym" placeholder="请选择条码格式">
+                        <el-option
+                            v-for="item in mBarcodeTypeArr"
+                            :key="item.sym"
+                            :label="item.desc"
+                            :value="item.sym">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="条码比例 (Scale)">
+                    <el-input-number v-model="mScale" :min="1" :max="20" @change="render(mQueue.items[mIndex])"></el-input-number>
+                </el-form-item>
+                <el-form-item label="显示条码内容">
+                    <el-checkbox v-model="mShowContentText">显示</el-checkbox>
+                </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="calcData">确认</el-button>                    
+                    <el-button type="primary" @click="calcData">确认</el-button>
+
+                    <el-button type="danger" @click="resetCarpoly">嘉宝莉</el-button>
                 </el-form-item>
             </el-form>
         </el-collapse-item>
         <el-collapse-item name="2" title="2. 生成条码日志">
             <el-table
                 ref="myTable"
-                :data="mArray"
+                :data="mQueue.items"
                 :height="mTable_Height"
                 style=""
                 highlight-current-row
@@ -47,32 +67,47 @@ const view_Root =
                 <el-form-item label="翻页页数">                    
                     <el-input v-model="mSliderArgs.PlusX"></el-input>
                 </el-form-item>
-                <el-form-item label="条码比例 (Scale)">
-                    <el-input-number v-model="mScale" :min="1" :max="20" @change="render(mArray[mIndex])"></el-input-number>
-                </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="playSlider" :loading="IsSliderPlaying">幻灯片播放</el-button>
-                    <el-button type="danger" @click="stopSlider" :disabled="!IsSliderPlaying">停止播放</el-button>
+                    <el-button type="primary" @click="playSlider" :loading="IsSliderPlaying">播放</el-button>
+                    <el-button type="danger" @click="stopSlider" :disabled="!IsSliderPlaying">停止</el-button>
                 </el-form-item>
             </el-form>
         </el-collapse-item>
     </el-collapse>
-    <el-row style="margin-top: 10px">
-        <el-col :span="1">
-            <el-button icon="el-icon-moon" circle @click="mMarginBar_Visible = !mMarginBar_Visible"></el-button>
-        </el-col>
-        <el-col :span="23">
-            <el-slider v-if="mMarginBar_Visible" v-model="mMarginLeft" :min="0" :max="1920"></el-slider>
-        </el-col>
-    </el-row>
+
+    <div v-if="mScreenKeepOn_IsVisible">
+        <el-tag
+            v-if="mScreenKeepOn_Checkbox_Disable" 
+            type="danger">{{mScreenKeepOn_Checkbox_DisableReason}}</el-tag>
+
+        <el-divider 
+            v-if="mScreenKeepOn_Checkbox_Disable"
+            direction="vertical" ></el-divider>
+
+        <el-checkbox 
+            :disabled="mScreenKeepOn_Checkbox_Disable"
+            v-model="mScreenKeepOn"
+            @change="screenKeepOn_OnChanged">屏幕常亮</el-checkbox>
+    </div>
+
+    <el-statistic v-if="mIntervalId" :value="mDeadline" time-indices></el-statistic>
+
+    <div style="display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; justify-content: flex-start;">
+        <el-button icon="el-icon-moon" circle @click="mMarginBar_Visible = !mMarginBar_Visible"></el-button>
+        <div style="width: 20px"></div>
+        <el-slider v-if="mMarginBar_Visible" v-model="mMarginLeft" :min="mMarginLeft_Min" :max="mMarginLeft_Max" style="width: 100%; margin-left: auto;"></el-slider>
+    </div>    
+
     <el-row>
-        <el-col :span="1">
-            <el-slider v-if="mMarginBar_Visible" v-model="mMarginTop" vertical height="600px" :min="-1080" :max="1080"></el-slider>
-        </el-col>
-        <el-col :span="23">
+        <el-col :span="22">
             <canvas ref="myCanvas" :style="canvasStyle"></canvas>
-        </el-col>                
+        </el-col>
+        <el-col :span="2">
+            <el-slider v-if="mMarginBar_Visible" v-model="mMarginTop" vertical height="600px" :min="mMarginTop_Min" :max="mMarginTop_Max" style="margin-top: 10px;"></el-slider>
+        </el-col>
     </el-row>
+
+    
 </div>`,
     data: function ()
     {
@@ -81,32 +116,115 @@ const view_Root =
             mActiveName: ['1', '3'],
 
             mTable_Height: 300,
-            mArray: [], // 数据从 data.json 文件中获取
+            mQueue: new Queue(10), // 只显示最近 X 条记录
             
-            // mSearchArgs: new SearchArgs(`ABC0001XYZ`, 10, 3, 4),
-            
-            mSearchArgs: new SearchArgs(`ABC0001XYZ`, 3, 4),
+            mSearchArgs: {
+                Content: `ABC0001XYZ`,
+                SNStartAtIndex: 3,
+                SNLength: 4
+            },
             mSliderArgs: {
                 Interval: 10000,
                 PlusX: 1,
             },
-            mScale: 5,
+            mScale: 2,
 
             mIntervalId: null,
+            mDeadline: null, // 下一个条码倒计时
+
             mIndex: 0,
 
             mMarginBar_Visible: false,
+            
+            mMarginLeft_Min: 0,
+            mMarginLeft_Max: 0,
             mMarginLeft: 0,
+
+            mMarginTop_Min: 0,
+            mMarginTop_Max: 0,
             mMarginTop: 0,
 
             mPrefix: '',
             mSuffix: '',
             mSNLength: 4,
-            mSN: 1
+            mSN: 1,
+
+            
+            mBarcodeTypeArr: [    
+            {
+                sym: "qrcode",
+                desc: "QR Code",
+                text: "http://goo.gl/0bis",
+                opts: "eclevel=M"
+            },
+            {
+                sym: "ean13",
+                desc: "EAN-13",
+                text: "9520123456788",
+                opts: "includetext guardwhitespace"
+            },
+            {
+                sym: "code128",
+                desc: "Code 128",
+                text: "Count01234567!",
+                opts: "includetext"
+            },
+            {
+                sym: "code39",
+                desc: "Code 39",
+                text: "THIS IS CODE 39",
+                opts: "includetext includecheck includecheckintext"
+            },
+            {
+                sym: "code93",
+                desc: "Code 93",
+                text: "THIS IS CODE 93",
+                opts: "includetext includecheck"
+            },
+            {
+                sym: "datamatrix",
+                desc: "Data Matrix",
+                text: "This is Data Matrix!",
+                opts: ""
+            }],
+            mBarcodeType_sym: "qrcode",
+            mBarcodeType: null,
+
+            mShowContentText: true,
+
+
+
+
+            //#region 屏幕常亮
+
+            mScreenKeepOn_IsVisible: false,
+            mScreenKeepOn_Checkbox_Disable: true,
+            mScreenKeepOn_Checkbox_DisableReason: "找不到 $device 对象",
+            mScreenKeepOn: false
+            
+            //#endregion  
         };
     },
     mounted: function() {
+        this.mMarginLeft_Min = -window.innerWidth / 3;
+        this.mMarginLeft_Max = window.innerWidth;
+
+        this.mMarginTop_Min = -window.innerHeight / 6;
+        this.mMarginTop_Max = window.innerHeight;
+
         this.calcData();
+
+        //#region 屏幕常亮
+        try
+        {
+            this.mScreenKeepOn = ( this.getScreenKeepOn() === "true"? true : false );
+            this.Permission_Check();
+        }
+        catch(e)
+        {
+            this.mScreenKeepOn_IsVisible = false;
+        }
+        //#endregion 
     },
     computed: {
         IsSliderPlaying() {
@@ -121,6 +239,15 @@ const view_Root =
         }
     },
     methods: {
+
+        resetCarpoly: function() {
+            this.mSearchArgs = {
+                Content: `E00001`,
+                SNStartAtIndex: 1,
+                SNLength: 5
+            };
+        },
+
         calcData: function() {
             this.calcData_ActualMethod(this.mSearchArgs);
         },
@@ -189,6 +316,7 @@ const view_Root =
         stopSlider: function() {
             clearInterval(this.mIntervalId);
             this.mIntervalId = null;
+            this.mDeadline = Date.now();
         },
         
         playSlider: function() {
@@ -205,6 +333,8 @@ const view_Root =
             // 设置定时器，每 X 秒执行一次绘制函数
             this.mIntervalId = setInterval(this.drawBarcode, this.mSliderArgs.Interval);
             
+            this.mDeadline = Date.now() + this.mSliderArgs.Interval;
+
             // 马上执行一次绘制
             this.drawBarcode();
         },
@@ -214,16 +344,17 @@ const view_Root =
 
             var data = 
             {
-                Index : this.mArray.length,
-                Number : this.mArray.length + 1,
+                Index : this.mIndex,
+                Number : this.mIndex + 1,
                 Content : content
             };
 
-            this.mArray.push(data);
+            this.mQueue.enqueue(data);
             
             this.render(data);
             
             this.$nextTick(()=>{
+                this.mDeadline = Date.now() + this.mSliderArgs.Interval;
                 this.setCurrent(data);
                 this.scrollTable2Obj(this.mIndex);
             });            
@@ -231,22 +362,23 @@ const view_Root =
             this.mIndex = this.mIndex + this.mSliderArgs.PlusX;
         },
 
-        render: function() {
-            let opts = {};
-
-            let a0 = arguments[0];
-            
-            opts.text = a0.Content;
-            opts.alttext = a0.Content;
-            opts.scaleX = this.mScale;
-            opts.scaleY = this.mScale;
-
-            const canvas = this.$refs.myCanvas;
-
-            opts.bcid = "qrcode";
-
+        render: function() {                        
             try 
             {
+                let a0 = arguments[0];
+                
+                let opts = {};                
+                
+                opts.bcid = this.mBarcodeType_sym;
+                opts.text = a0.Content;
+                if(this.mShowContentText)
+                {
+                    opts.alttext = a0.Content;
+                }
+                opts.scaleX = this.mScale;
+                opts.scaleY = this.mScale;
+
+                const canvas = this.$refs.myCanvas;
                 bwipjs.toCanvas(canvas, opts);
             } 
             catch(e) 
@@ -268,52 +400,68 @@ const view_Root =
             }
         },
 
+        //#region 屏幕常亮
 
-        //#region 导入文本文档
+        //#region 权限列表
 
-        btnImportTXT: function() {
-            this.$refs.upload0.click();
+        Permission_Check: function() {
+            const jsonStr = $device.Screen_CheckPermissions();
+            const m = JSON.parse(jsonStr);
+            if(!m.IsSuccess) 
+            {
+                return;
+            }
+            this.mPermissionArr = JSON.parse(m.Data);
+            this.Permission_Check_WAKE_LOCK();
         },
-    
-        upload0_ChangeEvent_Handler(event) {
-            const files = event.target.files;
-            const that = this;
-            for (let index = 0; index < files.length; index++) {
-                const fileReader = new FileReader();
 
-                let selectedFile = files[index];
-                this.fileName = selectedFile.name;
-                fileReader.readAsText(selectedFile);
+        requestPermission: function() {
+            $device.Permission_Request(arguments[0]);
+        },
+        
+        Permission_Check_WAKE_LOCK: function() {
+            const jsonStr = $device.Permission_Check("android.permission.WAKE_LOCK");
+            const m = JSON.parse(jsonStr);
+            if(!m.IsSuccess) 
+            {
+                this.mScreenKeepOn_Checkbox_Disable = true;
+                this.mScreenKeepOn_Checkbox_DisableReason = m.ExceptionInfo;
+                return;
+            }
 
-                fileReader.onload = function () {                
-                    // 当文件读取完成时，FileReader对象的onload事件会被触发。
-                    // 这个事件的处理函数会被执行，而且它的this.result属性会包含读取的文件内容。
-                    // 这个属性的类型取决于你使用的读取方法。例如，如果你使用readAsText()方法，那么this.result属性就是一个字符串，
-                    // 如果你使用readAsArrayBuffer()方法，那么this.result属性就是一个ArrayBuffer对象。
-                    if (fileReader == this) {
-                        console.log(`this 是代表 fileReader`);
-                    }
-                    console.log("fileReader.result 的类型是", typeof this.result);
-                    console.log(`读取结果[${typeof this.result}]\n`, this.result);
-                    
-                    let arr = this.result.split(/\r\n|\r|\n/);
-                    arr = arr.filter(line => line.trim() !== '');
-                    
-                    let r = [];
-                    for(let i = 0; i < arr.length; i++)
-                    {
-                        r.push
-                        ({
-                            Index : i,
-                            Number : i + 1,
-                            Content : arr[i]
-                        });
-                    }
-                    that.mArray = r;
-                };
+            this.mScreenKeepOn_Checkbox_Disable = false;
+        },
+
+        //#endregion
+        
+        getScreenKeepOn: function() {
+            return $device.Screen_GetScreenKeepOn();
+        },
+
+        screenKeepOn_OnChanged: function() 
+        {
+            const v = arguments[0];
+            const checked = arguments[1];
+            const jsonStr = $device.Screen_SetScreenKeepOn(v);
+            const m = JSON.parse(jsonStr);
+
+            if(!m.IsSuccess) 
+            {
+                // 在下一个DOM更新周期之前执行, 阻止 checked 值的修改
+                this.$nextTick(() => {
+                    this.mScreenKeepOn = !checked;
+                });
+
+                this.$notify({
+                    type: "error",
+                    title: "捕获异常",
+                    message: `${m.ExceptionInfo}`,
+                    position: 'bottom-left',
+                });
             }
         },
 
         //#endregion
+
     }
 };
